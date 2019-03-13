@@ -3,6 +3,11 @@ package converter;
 import javafx.scene.control.TextField;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 public class AppController {
 	
@@ -37,5 +42,16 @@ public class AppController {
     @FXML
     private void update()
     {
+    }
+    
+    public static JsonObject fetchRates(String currencyCode) throws FileNotFoundException {
+        // retrive entire file and place into a single string
+        Scanner input = new Scanner(new File("./currencydata/" + currencyCode + ".json")).useDelimiter("\\Z");
+        String jsonString = input.next();
+        
+        // parse json string
+        JsonParser parser = new JsonParser();
+        JsonObject json = parser.parse(jsonString).getAsJsonObject();
+        return json;
     }
 }
