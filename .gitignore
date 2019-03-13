@@ -116,3 +116,9 @@ local.properties
 .cache-main
 .scala_dependencies
 .worksheet
+
+# json file for conversion rates
+currencydata/
+
+# build files
+target/
