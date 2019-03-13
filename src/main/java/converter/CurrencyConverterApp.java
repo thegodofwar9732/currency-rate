@@ -11,8 +11,9 @@ public class CurrencyConverterApp extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/appview.fxml"));
-        primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 300, 275));
+        Scene scene = new Scene(root);
+        primaryStage.setTitle("Currency Converter");
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 
