@@ -1,6 +1,5 @@
 # Daily Currency Rate Desktop Application
-Watch the daily currency rate of U.S. dollars Vs International currency rate.
-Developed by a group of Computer Scinece students at Brooklyn College under the supervision of Professor Deborah Kelenetik.
+Get the currency exchange rates.
 
 ## Running the Application
 Go to command line 
