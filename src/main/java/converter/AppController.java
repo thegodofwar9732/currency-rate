@@ -30,27 +30,36 @@ public class AppController {
     //Default Constructor
     public AppController() {
     }
-    
+
     @FXML
     private void initialize() {
         //Initialize the ChoiceBoxes with the currencies.
         sourceComboBox.getItems().setAll(Currency.values());
         targetComboBox.getItems().setAll(Currency.values());
     }
-    
+
     @FXML
-    private void update()
-    {
+    private void update() {
     }
-    
-    public static JsonObject fetchRates(String currencyCode) throws FileNotFoundException {
-        // retrive entire file and place into a single string
-        Scanner input = new Scanner(new File("./currencydata/" + currencyCode + ".json")).useDelimiter("\\Z");
+
+    @FXML
+    private void convert() throws FileNotFoundException {
+        String source = sourceComboBox.getValue().getCode();
+        String target = targetComboBox.getValue().getCode();
+        double rate = fetchRate(source, target) * Double.parseDouble(inputText.getText());
+        outputText.setText(Double.toString(rate));
+    }
+
+    private double fetchRate(String source, String target) throws FileNotFoundException {
+        double rate;
+        // retrieve entire file and place into a single string
+        Scanner input = new Scanner(new File(Downloader.SAVE_DIRECTORY + "/" + source + ".json")).useDelimiter("\\Z");
         String jsonString = input.next();
-        
+
         // parse json string
         JsonParser parser = new JsonParser();
-        JsonObject json = parser.parse(jsonString).getAsJsonObject();
-        return json;
+        JsonObject json = parser.parse(jsonString).getAsJsonObject().getAsJsonObject(target);
+        rate = json.get("rate").getAsDouble();
+        return rate;
     }
 }
