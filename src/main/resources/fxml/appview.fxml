@@ -17,7 +17,7 @@
         <Button fx:id="updateButton" alignment="CENTER" contentDisplay="CENTER" layoutX="434.0" layoutY="222.0" mnemonicParsing="false" onAction="#update" text="Update" />
         <Rectangle arcHeight="5.0" arcWidth="5.0" height="7.0" layoutX="246.0" layoutY="128.0" stroke="BLACK" strokeType="INSIDE" width="45.0" />
         <Rectangle arcHeight="5.0" arcWidth="5.0" height="7.0" layoutX="246.0" layoutY="142.0" stroke="BLACK" strokeType="INSIDE" width="45.0" />
-        <ComboBox fx:id="box1" layoutX="41.0" layoutY="147.0" prefHeight="29.0" prefWidth="162.0" promptText="Convert From" />
-        <ComboBox fx:id="box2" layoutX="333.0" layoutY="147.0" prefHeight="29.0" prefWidth="162.0" promptText="Convert To" />
+        <ComboBox fx:id="sourceComboBox" layoutX="41.0" layoutY="147.0" prefHeight="29.0" prefWidth="162.0" promptText="Convert From" />
+        <ComboBox fx:id="targetComboBox" layoutX="333.0" layoutY="147.0" prefHeight="29.0" prefWidth="162.0" promptText="Convert To" />
     </Pane>
 </AnchorPane>
