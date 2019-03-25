@@ -46,13 +46,13 @@ public class AppController {
     private void convert() throws FileNotFoundException {
         String source = sourceComboBox.getValue().getCode();
         String target = targetComboBox.getValue().getCode();
-        double rate = fetchRate(source, target) * Double.parseDouble(inputText.getText());
+        double rate = getRate(source, target) * Double.parseDouble(inputText.getText());
         outputText.setText(Double.toString(rate));
     }
-    
+
     private JsonObject fetchRates(String sourceCurrency) throws FileNotFoundException {
-        // retrive entire file and place into a single string
-        Scanner input = new Scanner(new File("./currencydata/" + sourceCurrency + ".json")).useDelimiter("\\Z");
+        // retrieve entire file and place into a single string
+        Scanner input = new Scanner(new File(Downloader.SAVE_DIRECTORY + "/" + sourceCurrency + ".json")).useDelimiter("\\Z");
         String jsonString = input.next();
 
         // parse json string
@@ -60,9 +60,10 @@ public class AppController {
         JsonObject rates = parser.parse(jsonString).getAsJsonObject();
         return rates;
     }
-    public Double getRate(String sourceCurrency, String targetCurrency) throws FileNotFoundException{
+
+    private double getRate(String sourceCurrency, String targetCurrency) throws FileNotFoundException {
         JsonObject rates = fetchRates(sourceCurrency);
-        Double rate = rates.getAsJsonObject(targetCurrency).get("rate").getAsDouble();
+        double rate = rates.getAsJsonObject(targetCurrency).get("rate").getAsDouble();
         return rate;
     }
 }
