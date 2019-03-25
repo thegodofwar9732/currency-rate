@@ -49,17 +49,20 @@ public class AppController {
         double rate = fetchRate(source, target) * Double.parseDouble(inputText.getText());
         outputText.setText(Double.toString(rate));
     }
-
-    private double fetchRate(String source, String target) throws FileNotFoundException {
-        double rate;
-        // retrieve entire file and place into a single string
-        Scanner input = new Scanner(new File(Downloader.SAVE_DIRECTORY + "/" + source + ".json")).useDelimiter("\\Z");
+    
+    private JsonObject fetchRates(String sourceCurrency) throws FileNotFoundException {
+        // retrive entire file and place into a single string
+        Scanner input = new Scanner(new File("./currencydata/" + sourceCurrency + ".json")).useDelimiter("\\Z");
         String jsonString = input.next();
 
         // parse json string
         JsonParser parser = new JsonParser();
-        JsonObject json = parser.parse(jsonString).getAsJsonObject().getAsJsonObject(target);
-        rate = json.get("rate").getAsDouble();
+        JsonObject rates = parser.parse(jsonString).getAsJsonObject();
+        return rates;
+    }
+    public Double getRate(String sourceCurrency, String targetCurrency) throws FileNotFoundException{
+        JsonObject rates = fetchRates(sourceCurrency);
+        Double rate = rates.getAsJsonObject(targetCurrency).get("rate").getAsDouble();
         return rate;
     }
 }
