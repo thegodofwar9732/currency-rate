@@ -5,6 +5,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import converter.downloader.Downloader;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -40,8 +43,10 @@ public class AppController {
     }
     
     @FXML
-    private void update()
+    private void update() throws Exception
     {
+    		Downloader download = new Downloader();
+    		download.downloadFile();
     }
     
     private JsonObject fetchRates(String sourceCurrency) throws FileNotFoundException {
