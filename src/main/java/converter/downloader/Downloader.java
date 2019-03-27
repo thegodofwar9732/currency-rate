@@ -9,7 +9,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class Downloader {
-    static final String SAVE_DIRECTORY = "./currencydata";
+    public static final String SAVE_DIRECTORY = "./currencydata";
 
     private final String BASE_URL = "http://www.floatrates.com/daily/";
 
