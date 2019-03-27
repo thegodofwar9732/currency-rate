@@ -2,6 +2,7 @@ package converter;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
 import converter.downloader.Downloader;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
@@ -9,6 +10,7 @@ import javafx.scene.control.TextField;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class AppController {
@@ -39,7 +41,10 @@ public class AppController {
     }
 
     @FXML
-    private void update() {
+
+    private void update() throws IOException {
+    	Downloader download = new Downloader();
+    	download.downloadFile();
     }
 
     @FXML
