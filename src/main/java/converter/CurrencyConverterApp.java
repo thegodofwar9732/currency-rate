@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import converter.downloader.*;
 
 public class CurrencyConverterApp extends Application {
 
@@ -19,5 +20,7 @@ public class CurrencyConverterApp extends Application {
 
     public static void main(String[] args) {
         launch(args);
+        Downloader downloader = new Downloader();
+        downloadFile();
     }
 }
