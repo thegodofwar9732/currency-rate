@@ -41,10 +41,9 @@ public class AppController {
 
     @FXML
 
-    private void update() throws Exception
-    {
-    		Downloader download = new Downloader();
-    		download.downloadFile();
+    private void update() throws IOException {
+    	Downloader download = new Downloader();
+    	download.downloadFile();
     }
 
     @FXML
