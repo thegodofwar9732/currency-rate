@@ -122,3 +122,6 @@ currencydata/
 
 # build files
 target/
+
+/.project
+/.classpath
