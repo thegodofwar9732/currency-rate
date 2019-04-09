@@ -11,24 +11,42 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Downloader {
-    public static final String SAVE_DIRECTORY = "./currencydata";
+    public static final String SAVE_DIRECTORY = "./currencydata/";
 
     private final String BASE_URL = "http://www.floatrates.com/daily/";
 
-    public void downloadFile() throws IOException {
-        ExecutorService executorService = Executors.newCachedThreadPool();
+    private ExecutorService executorService = Executors.newCachedThreadPool();
+
+    public void downloadFile() {
+        executorService.submit(() -> {
+            try {
+                run();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                executorService.shutdown();
+            }
+        });
+    }
+
+    private void download(Currency currency, URL source) throws IOException {
+        String fileName = currency.getCode() + ".json";
+        File saveFile = new File(SAVE_DIRECTORY + fileName);
+        FileUtils.copyURLToFile(source, saveFile);
+    }
+
+    private void run() throws IOException {
         for (Currency currency : Currency.values()) {
             URL source = new URL(BASE_URL + currency.getCode() + ".json");
-            if (((HttpURLConnection) source.openConnection()).getResponseCode() == 200) {
+            if (((HttpURLConnection) source.openConnection()).getResponseCode() == HttpURLConnection.HTTP_OK) {
                 executorService.submit(() -> {
                     try {
-                        FileUtils.copyURLToFile(source, new File(String.format("%s/%s.json", SAVE_DIRECTORY, currency.getCode())));
+                        download(currency, source);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 });
             }
         }
-        executorService.shutdown();
     }
 }
