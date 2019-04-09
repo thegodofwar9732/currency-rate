@@ -1,6 +1,10 @@
 package converter;
 
-import converter.downloader.Downloader;
+import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
+import converter.downloader.ScheduledDownloadTask;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,8 +20,17 @@ public class CurrencyConverterApp extends Application {
         primaryStage.setTitle("Currency Converter");
         primaryStage.setScene(scene);
         primaryStage.show();
-        Downloader downloader = new Downloader();
-        downloader.downloadFile();
+        
+        //Download at midnight
+        Timer timer = new Timer();
+        TimerTask task = new ScheduledDownloadTask();
+        
+        Calendar today = Calendar.getInstance();
+        today.set(Calendar.HOUR_OF_DAY, 0); // midnight
+        today.set(Calendar.MINUTE, 0); // 0 minutes
+        today.set(Calendar.SECOND, 0); // 0 seconds
+        
+        timer.schedule(task, today.getTime(), TimeUnit.HOURS.toMillis(24));
     }
 
     public static void main(String[] args) {
