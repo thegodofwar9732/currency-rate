@@ -1,12 +1,15 @@
 package converter.downloader;
 
 import converter.Currency;
-import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -32,7 +35,21 @@ public class Downloader {
     private void download(Currency currency, URL source) throws IOException {
         String fileName = currency.getCode() + ".json";
         File saveFile = new File(SAVE_DIRECTORY + fileName);
-        FileUtils.copyURLToFile(source, saveFile);
+
+        if (!saveFile.getParentFile().exists()) {
+            saveFile.getParentFile().mkdir();
+        }
+
+        if (!saveFile.exists()) {
+            saveFile.createNewFile();
+        }
+
+        ReadableByteChannel readableByteChannel = Channels.newChannel(source.openStream());
+        FileOutputStream fileOutputStream = new FileOutputStream(saveFile);
+        FileChannel fileChannel = fileOutputStream.getChannel();
+        fileChannel.transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
+        readableByteChannel.close();
+        fileOutputStream.close();
     }
 
     private void run() throws IOException {
