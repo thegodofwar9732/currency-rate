@@ -7,6 +7,8 @@ import converter.downloader.Downloader;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -45,7 +47,7 @@ public class AppController {
         Downloader download = new Downloader();
         download.downloadFile();
     }
-
+    
     @FXML
     private void convert() throws FileNotFoundException {
         String source = sourceComboBox.getValue().getCode();
@@ -53,7 +55,18 @@ public class AppController {
         double rate = getRate(source, target) * Double.parseDouble(inputText.getText());
         outputText.setText(Double.toString(rate));
     }
-
+    
+    @FXML
+    private void instantUpdate(KeyEvent event) throws IOException {
+    	//Update the ouputText when a number is entered
+    	if(event.getCode() == KeyCode.DIGIT0 ||event.getCode() == KeyCode.DIGIT1 ||event.getCode() == KeyCode.DIGIT2 ||event.getCode() == KeyCode.DIGIT3 ||event.getCode() == KeyCode.DIGIT4 || event.getCode() == KeyCode.DIGIT5 || event.getCode() == KeyCode.DIGIT6 || event.getCode() == KeyCode.DIGIT7 || event.getCode() == KeyCode.DIGIT8 || event.getCode() == KeyCode.DIGIT9 ) {
+    		convert();
+    	}
+    	if(event.getCode() == KeyCode.BACK_SPACE) {
+    		convert();
+    	}
+    }
+    
     private JsonObject fetchRates(String sourceCurrency) throws FileNotFoundException {
         // retrieve entire file and place into a single string
         Scanner input = new Scanner(new File(Downloader.SAVE_DIRECTORY + sourceCurrency + ".json")).useDelimiter("\\Z");

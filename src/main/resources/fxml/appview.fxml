@@ -12,8 +12,11 @@
                 <Font size="18.0" />
             </font>
         </Label>
-        <TextField fx:id="inputText" layoutX="41.0" layoutY="93.0" text="1" onAction="#convert"/>
+        
+        <TextField fx:id="inputText" layoutX="41.0" layoutY="93.0" text="1" onKeyPressed="#instantUpdate"/>
+        
         <TextField fx:id="outputText" layoutX="332.0" layoutY="93.0" />
+       
         <Button fx:id="updateButton" alignment="CENTER" contentDisplay="CENTER" layoutX="434.0" layoutY="222.0" mnemonicParsing="false" onAction="#update" text="Update" />
         <Rectangle arcHeight="5.0" arcWidth="5.0" height="7.0" layoutX="246.0" layoutY="128.0" stroke="BLACK" strokeType="INSIDE" width="45.0" />
         <Rectangle arcHeight="5.0" arcWidth="5.0" height="7.0" layoutX="246.0" layoutY="142.0" stroke="BLACK" strokeType="INSIDE" width="45.0" />
