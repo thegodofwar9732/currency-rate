@@ -65,7 +65,7 @@ public class AppController {
         return rates;
     }
 
-    private double getRate(String sourceCurrency, String targetCurrency) throws FileNotFoundException {
+    protected double getRate(String sourceCurrency, String targetCurrency) throws FileNotFoundException {
         JsonObject rates = fetchRates(sourceCurrency);
         double rate = rates.getAsJsonObject(targetCurrency).get("rate").getAsDouble();
         return rate;
