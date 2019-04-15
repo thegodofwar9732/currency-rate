@@ -66,7 +66,7 @@ public class AppController {
 
     private JsonObject fetchRates(String sourceCurrency) throws FileNotFoundException {
         // retrieve entire file and place into a single string
-        Scanner input = new Scanner(new File(Downloader.SAVE_DIRECTORY + "/" + sourceCurrency + ".json")).useDelimiter("\\Z");
+        Scanner input = new Scanner(new File(Downloader.SAVE_DIRECTORY + sourceCurrency + ".json")).useDelimiter("\\Z");
         String jsonString = input.next();
 
         // parse json string
