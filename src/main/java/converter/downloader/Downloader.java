@@ -4,12 +4,15 @@ import converter.Currency;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -66,5 +69,13 @@ public class Downloader {
             }
         }
         executorService.shutdown();
+        // get time of download
+      	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm");
+      	LocalDateTime time = LocalDateTime.now();
+
+       	File file = new File("DownloadDate.txt");
+       	FileWriter fileWriter = new FileWriter(file);
+       	fileWriter.write(dtf.format(time));
+      	fileWriter.close();
     }
 }

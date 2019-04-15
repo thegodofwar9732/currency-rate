@@ -7,8 +7,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Scanner;
 
 public class AppController {
@@ -35,10 +40,16 @@ public class AppController {
     }
 
     @FXML
-    private void initialize() {
+    private void initialize() throws IOException {
         //Initialize the ChoiceBoxes with the currencies.
         sourceComboBox.getItems().setAll(Currency.values());
         targetComboBox.getItems().setAll(Currency.values());
+        
+        //get time of last download
+        InputStream is = new FileInputStream("DownloadDate.txt");
+        BufferedReader buf = new BufferedReader(new InputStreamReader(is)); 
+        String date = buf.readLine();
+        LatestUpdate.setText(date);
     }
 
     @FXML
