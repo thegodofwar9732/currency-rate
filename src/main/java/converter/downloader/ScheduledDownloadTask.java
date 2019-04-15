@@ -32,7 +32,6 @@ public class ScheduledDownloadTask extends TimerTask {
 		    
 		    //if dates are the same, it should not be downloaded.
 		    LocalDate dateNow = LocalDate.now();
-		    System.out.println("date now: " + dateNow);
 		    if (!(dateNow.equals(localdate))) {
 				Downloader downloader = new Downloader();
 				downloader.downloadFile();
