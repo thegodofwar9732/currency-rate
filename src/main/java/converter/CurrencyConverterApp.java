@@ -21,8 +21,8 @@ public class CurrencyConverterApp extends Application {
         TimerTask task = new ScheduledDownloadTask();
         
         Calendar today = Calendar.getInstance();
-        today.set(Calendar.HOUR_OF_DAY, 2); // midnight
-        today.set(Calendar.MINUTE, 07); // 0 minutes
+        today.set(Calendar.HOUR_OF_DAY, 0); // midnight
+        today.set(Calendar.MINUTE, 0); // 0 minutes
         today.set(Calendar.SECOND, 0); // 0 seconds
         
         timer.schedule(task, today.getTime(), TimeUnit.HOURS.toMillis(24));

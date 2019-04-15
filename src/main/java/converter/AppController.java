@@ -52,7 +52,7 @@ public class AppController {
 	    InputStream is = new FileInputStream("DownloadDate.txt"); 
 	    BufferedReader buf = new BufferedReader(new InputStreamReader(is)); 
 	    String date = buf.readLine();
-	    
+	    buf.close();
 	    LatestUpdate.setText(date);
     }
 
