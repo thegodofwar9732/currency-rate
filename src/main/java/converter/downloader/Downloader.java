@@ -5,12 +5,15 @@ import converter.Database;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,10 +26,10 @@ public class Downloader {
 
     private ExecutorService executorService = Executors.newCachedThreadPool();
 
-    public void downloadFile() {
+    public void downloadFile(String localDate) {
         executorService.submit(() -> {
             try {
-                run();
+                run(localDate);
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -35,9 +38,9 @@ public class Downloader {
         });
     }
 
-    private void download(Currency currency, URL source) throws IOException {
+    private void download(String localDate, Currency currency, URL source) throws IOException {
         String fileName = currency.getCode() + ".json";
-        File saveFile = new File(SAVE_DIRECTORY + fileName);
+        File saveFile = new File(SAVE_DIRECTORY + localDate + "/" + fileName);
 
         if (!saveFile.getParentFile().exists()) {
             saveFile.getParentFile().mkdir();
@@ -55,19 +58,29 @@ public class Downloader {
         fileOutputStream.close();
     }
 
-    private void run() throws IOException {
+    private void run(String localDate) throws IOException {
         for (Currency currency : Currency.values()) {
             URL source = new URL(BASE_URL + currency.getCode() + ".json");
             if (((HttpURLConnection) source.openConnection()).getResponseCode() == HttpURLConnection.HTTP_OK) {
                 executorService.submit(() -> {
                     try {
-                        download(currency, source);
+                        download(localDate, currency, source);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 });
             }
         }
+        executorService.shutdown();
+        // get time of download
+      	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm");
+      	LocalDateTime time = LocalDateTime.now();
+
+       	File file = new File("DownloadDate.txt");
+       	FileWriter fileWriter = new FileWriter(file);
+       	fileWriter.write(dtf.format(time));
+      	fileWriter.close();
+
         Database db = new Database();
 
         Calendar c = new GregorianCalendar();
