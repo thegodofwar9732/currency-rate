@@ -125,3 +125,5 @@ target/
 
 /.project
 /.classpath
+
+.DS_STORE
