@@ -6,6 +6,8 @@ import converter.downloader.Downloader;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -51,7 +53,7 @@ public class AppController {
         String date = buf.readLine();
         LatestUpdate.setText(date);
     }
-
+    
     @FXML
     private void convert() throws FileNotFoundException {
         String source = sourceComboBox.getValue().getCode();
@@ -59,7 +61,28 @@ public class AppController {
         double rate = getRate(source, target) * Double.parseDouble(inputText.getText());
         outputText.setText(Double.toString(rate));
     }
+    
+    @FXML
+    private void instantUpdate(KeyEvent event) throws IOException {
+    	//Update the ouputText when a number is entered or when inputText is modified   	
+    	if(event.getCode() == KeyCode.DIGIT0 ||event.getCode() == KeyCode.DIGIT1 ||event.getCode() == KeyCode.DIGIT2 ||event.getCode() == KeyCode.DIGIT3 ||event.getCode() == KeyCode.DIGIT4 || event.getCode() == KeyCode.DIGIT5 || event.getCode() == KeyCode.DIGIT6 || event.getCode() == KeyCode.DIGIT7 || event.getCode() == KeyCode.DIGIT8 || event.getCode() == KeyCode.DIGIT9 ) {    
+    		convert();
+    	}
+    	else if(event.getCode() == KeyCode.BACK_SPACE && !inputText.getText().isEmpty()) {
 
+    		if(  !(Double.parseDouble(inputText.getText()) <= 0) && inputText.getText() != null && inputText.getText().length() != 0 ){
+    			convert();   			
+    		}else if(event.getCode() == KeyCode.BACK_SPACE && inputText.getText().length() == 0) {
+    			outputText.setText("0");
+    		}    		
+    	}
+    	else if(event.getCode() == KeyCode.UNDEFINED) {
+    		outputText.setText("0");
+    	}else {
+    		outputText.setText("0");
+    	}
+    }
+    
     private JsonObject fetchRates(String sourceCurrency) throws FileNotFoundException {
         // retrieve entire file and place into a single string
         Scanner input = new Scanner(new File(Downloader.SAVE_DIRECTORY + sourceCurrency + ".json")).useDelimiter("\\Z");
