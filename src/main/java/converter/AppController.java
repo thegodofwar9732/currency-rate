@@ -9,13 +9,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Scanner;
 
 public class AppController {
@@ -37,23 +33,21 @@ public class AppController {
     @FXML
     private TextField LatestUpdate;
 
+    private Database database;
+
     //Default Constructor
     public AppController() {
+        database = new Database();
     }
 
     @FXML
-    private void initialize() throws IOException {
+    private void initialize() {
         //Initialize the ChoiceBoxes with the currencies.
         sourceComboBox.getItems().setAll(Currency.values());
         targetComboBox.getItems().setAll(Currency.values());
-        
-        //get time of last download
-        InputStream is = new FileInputStream("DownloadDate.txt");
-        BufferedReader buf = new BufferedReader(new InputStreamReader(is)); 
-        String date = buf.readLine();
-        LatestUpdate.setText(date);
+        LatestUpdate.setText(database.getLatestCollection());
     }
-    
+
     @FXML
     private void convert() throws FileNotFoundException {
         String source = sourceComboBox.getValue().getCode();
@@ -61,28 +55,26 @@ public class AppController {
         double rate = getRate(source, target) * Double.parseDouble(inputText.getText());
         outputText.setText(Double.toString(rate));
     }
-    
+
     @FXML
     private void instantUpdate(KeyEvent event) throws IOException {
-    	//Update the ouputText when a number is entered or when inputText is modified   	
-    	if(event.getCode() == KeyCode.DIGIT0 ||event.getCode() == KeyCode.DIGIT1 ||event.getCode() == KeyCode.DIGIT2 ||event.getCode() == KeyCode.DIGIT3 ||event.getCode() == KeyCode.DIGIT4 || event.getCode() == KeyCode.DIGIT5 || event.getCode() == KeyCode.DIGIT6 || event.getCode() == KeyCode.DIGIT7 || event.getCode() == KeyCode.DIGIT8 || event.getCode() == KeyCode.DIGIT9 ) {    
-    		convert();
-    	}
-    	else if(event.getCode() == KeyCode.BACK_SPACE && !inputText.getText().isEmpty()) {
+        //Update the ouputText when a number is entered or when inputText is modified
+        if (event.getCode() == KeyCode.DIGIT0 || event.getCode() == KeyCode.DIGIT1 || event.getCode() == KeyCode.DIGIT2 || event.getCode() == KeyCode.DIGIT3 || event.getCode() == KeyCode.DIGIT4 || event.getCode() == KeyCode.DIGIT5 || event.getCode() == KeyCode.DIGIT6 || event.getCode() == KeyCode.DIGIT7 || event.getCode() == KeyCode.DIGIT8 || event.getCode() == KeyCode.DIGIT9) {
+            convert();
+        } else if (event.getCode() == KeyCode.BACK_SPACE && !inputText.getText().isEmpty()) {
 
-    		if(  !(Double.parseDouble(inputText.getText()) <= 0) && inputText.getText() != null && inputText.getText().length() != 0 ){
-    			convert();   			
-    		}else if(event.getCode() == KeyCode.BACK_SPACE && inputText.getText().length() == 0) {
-    			outputText.setText("0");
-    		}    		
-    	}
-    	else if(event.getCode() == KeyCode.UNDEFINED) {
-    		outputText.setText("0");
-    	}else {
-    		outputText.setText("0");
-    	}
+            if (!(Double.parseDouble(inputText.getText()) <= 0) && inputText.getText() != null && inputText.getText().length() != 0) {
+                convert();
+            } else if (event.getCode() == KeyCode.BACK_SPACE && inputText.getText().length() == 0) {
+                outputText.setText("0");
+            }
+        } else if (event.getCode() == KeyCode.UNDEFINED) {
+            outputText.setText("0");
+        } else {
+            outputText.setText("0");
+        }
     }
-    
+
     private JsonObject fetchRates(String sourceCurrency) throws FileNotFoundException {
         // retrieve entire file and place into a single string
         Scanner input = new Scanner(new File(Downloader.SAVE_DIRECTORY + sourceCurrency + ".json")).useDelimiter("\\Z");

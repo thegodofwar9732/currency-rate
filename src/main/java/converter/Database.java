@@ -2,7 +2,10 @@ package converter;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.mongodb.client.*;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import converter.downloader.Downloader;
 import org.bson.Document;
 
@@ -66,5 +69,16 @@ public class Database {
         JsonParser parser = new JsonParser();
         JsonObject currencyJsonObject = parser.parse(currencyJsonString).getAsJsonObject();
         return currencyJsonObject;
+    }
+
+    public JsonObject getCurrency(String fileName) {
+        String currencyJsonString = database.getCollection(getLatestCollection()).find(eq("file", fileName)).first().toJson();
+        JsonParser parser = new JsonParser();
+        JsonObject currencyJsonObject = parser.parse(currencyJsonString).getAsJsonObject();
+        return currencyJsonObject;
+    }
+
+    public String getLatestCollection() {
+        return database.listCollectionNames().first();
     }
 }
