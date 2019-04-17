@@ -1,6 +1,7 @@
 package converter.downloader;
 
 import converter.Currency;
+import converter.Database;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -10,8 +11,10 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
+import java.util.Calendar;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.GregorianCalendar;
 
 public class Downloader {
     public static final String SAVE_DIRECTORY = "./currencydata/";
@@ -65,5 +68,21 @@ public class Downloader {
                 });
             }
         }
+        Database db = new Database();
+
+        Calendar c = new GregorianCalendar();
+        String day = Integer.toString(c.get(Calendar.DAY_OF_MONTH));
+        String month = Integer.toString(c.get(Calendar.MONTH) + 1);
+        String year = Integer.toString(c.get(Calendar.YEAR));
+        String today = month + "/" + day + "/" + year;
+        executorService.submit(() -> {
+            try {
+                db.addToCollection(today);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        });
     }
 }
