@@ -1,16 +1,13 @@
 package converter.downloader;
 
 import converter.Currency;
-import converter.Database;
+import converter.database.Database;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.FileChannel;
-import java.nio.channels.ReadableByteChannel;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -36,21 +33,7 @@ public class Downloader {
     private void download(Currency currency, URL source) throws IOException {
         String fileName = currency.getCode() + ".json";
         File saveFile = new File(SAVE_DIRECTORY + fileName);
-
-        if (!saveFile.getParentFile().exists()) {
-            saveFile.getParentFile().mkdir();
-        }
-
-        if (!saveFile.exists()) {
-            saveFile.createNewFile();
-        }
-
-        ReadableByteChannel readableByteChannel = Channels.newChannel(source.openStream());
-        FileOutputStream fileOutputStream = new FileOutputStream(saveFile);
-        FileChannel fileChannel = fileOutputStream.getChannel();
-        fileChannel.transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
-        readableByteChannel.close();
-        fileOutputStream.close();
+        FileUtils.copyURLToFile(source, saveFile);
     }
 
     private void run(String localDate) throws IOException {
@@ -69,13 +52,6 @@ public class Downloader {
         executorService.shutdown();
 
         Database db = new Database();
-
-        executorService.submit(() -> {
-            try {
-                db.addToCollection(localDate);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+        db.addToCollection(localDate);
     }
 }

@@ -2,6 +2,7 @@ package converter;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import converter.database.Database;
 import converter.downloader.Downloader;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
