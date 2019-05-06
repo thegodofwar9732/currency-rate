@@ -25,6 +25,6 @@
         <ComboBox fx:id="targetComboBox" layoutX="333.0" layoutY="147.0" prefHeight="29.0" prefWidth="162.0" promptText="Convert To" />
         <Text layoutX="261.0" layoutY="244.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Latest Update:" />
       <Text fx:id="LatestUpdate" layoutX="357.0" layoutY="243.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="114.92447582632303" />
-      <Text layoutX="27.0" layoutY="294.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Downloaded From: " />
+      <Text layoutX="27.0" layoutY="294.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Downloaded From: http://www.floatrates.com/daily/usd.xml" />
     </Pane>
 </AnchorPane>
