@@ -14,21 +14,14 @@ import java.time.format.DateTimeFormatter;
 public class CurrencyConverterApp extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-    	//Database database = new Database();
-        
+    public void start(Stage primaryStage) throws Exception {        
     	//If the file has already been downloaded today, it won't be downloaded again
     	String dateNow = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
         if (!downloadedToday(dateNow)) {
         	Downloader downloader = new Downloader();
         	downloader.downloadFile(dateNow);
         }
-        /*else {
-        	System.out.println("not downloading");
-        	System.out.println("today: " + dateNow);
-        	System.out.println("downloaded: " + database.getLatestCollection());
-        }
-        */
+     
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/appview.fxml"));
         Scene scene = new Scene(root);
         primaryStage.setTitle("Currency Converter");
@@ -46,7 +39,7 @@ public class CurrencyConverterApp extends Application {
     private boolean downloadedToday (String localDate) {
     	Database database = new Database();
     	boolean downloaded = false;
-    	String downloadDate = database.getLatestCollection();
+    	String downloadDate = database.getLatestUploadDate();
     	if (localDate.equals(downloadDate))
     		downloaded = true;
     	return downloaded;
