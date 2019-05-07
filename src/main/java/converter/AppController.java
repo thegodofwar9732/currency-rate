@@ -46,7 +46,7 @@ public class AppController {
         //Initialize the ChoiceBoxes with the currencies.
         sourceComboBox.getItems().setAll(Currency.values());
         targetComboBox.getItems().setAll(Currency.values());
-        LatestUpdate.setText(database.getLatestCollection());
+        LatestUpdate.setText(database.getLatestUploadDate());
     }
 
     @FXML

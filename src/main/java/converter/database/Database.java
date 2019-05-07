@@ -6,6 +6,8 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.IndexOptions;
+import com.mongodb.client.model.Indexes;
 import org.bson.Document;
 
 import java.io.IOException;
@@ -22,9 +24,10 @@ public class Database {
     private MongoCollection<Document> collection;
 
     public Database() {
-        mongoClient = MongoClients.create(HOST);
+        mongoClient = MongoClients.create();
         database = mongoClient.getDatabase(DATABASE);
         collection = database.getCollection(COLLECTION);
+        collection.createIndex(Indexes.descending("upload"), new IndexOptions().unique(true));
     }
 
     // put all json files in Downloader.SAVE_DIRECTORY into a specified collection
@@ -32,14 +35,15 @@ public class Database {
         collection.insertOne(Ulti.makeDocument(date));
     }
 
-    public JsonObject getCurrency(String fileName) {
-        String currencyJsonString = database.getCollection(getLatestCollection()).find(eq("file", fileName)).first().toJson();
+    public JsonObject getLatestCurrencyData() {
+        String currencyJsonString = collection.find(eq("upload", getLatestUploadDate())).first().toJson();
         JsonParser parser = new JsonParser();
-        JsonObject currencyJsonObject = parser.parse(currencyJsonString).getAsJsonObject();
+        JsonObject currencyJsonObject = parser.parse(currencyJsonString).getAsJsonObject().getAsJsonObject("files").getAsJsonObject(currency);
+
         return currencyJsonObject;
     }
 
-    public String getLatestCollection() {
-        return database.listCollectionNames().first();
+    public String getLatestUploadDate() {
+        return collection.find().sort(new Document("upload", -1)).first().getString("upload");
     }
 }
