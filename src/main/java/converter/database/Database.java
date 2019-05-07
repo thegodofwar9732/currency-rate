@@ -24,18 +24,29 @@ public class Database {
     private MongoCollection<Document> collection;
 
     public Database() {
-        mongoClient = MongoClients.create();
+        mongoClient = MongoClients.create(HOST);
         database = mongoClient.getDatabase(DATABASE);
         collection = database.getCollection(COLLECTION);
         collection.createIndex(Indexes.descending("upload"), new IndexOptions().unique(true));
     }
 
-    // put all json files in Downloader.SAVE_DIRECTORY into a specified collection
-    public void addToCollection(String date) throws IOException {
-        collection.insertOne(Ulti.makeDocument(date));
+    /**
+     * insert a formatted Document to database
+     *
+     * @param uploadDate date of upload
+     * @throws IOException if the read permission is denied on json files
+     */
+    public void addToCollection(String uploadDate) throws IOException {
+        collection.insertOne(Ulti.makeDocument(uploadDate));
     }
 
-    public JsonObject getLatestCurrencyData() {
+    /**
+     * find the latest currency data in the database and pase it to JsonObject
+     *
+     * @param currency name of currency
+     * @return parsed json object
+     */
+    public JsonObject getCurrencyData(String currency) {
         String currencyJsonString = collection.find(eq("upload", getLatestUploadDate())).first().toJson();
         JsonParser parser = new JsonParser();
         JsonObject currencyJsonObject = parser.parse(currencyJsonString).getAsJsonObject().getAsJsonObject("files").getAsJsonObject(currency);
@@ -43,6 +54,11 @@ public class Database {
         return currencyJsonObject;
     }
 
+    /**
+     * get the latest upload date
+     *
+     * @return the latest upload date
+     */
     public String getLatestUploadDate() {
         return collection.find().sort(new Document("upload", -1)).first().getString("upload");
     }
