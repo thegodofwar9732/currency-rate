@@ -60,6 +60,7 @@ public class Database {
      * @return the latest upload date
      */
     public String getLatestUploadDate() {
-        return collection.find().sort(new Document("upload", -1)).first().getString("upload");
+        String uploadDate = collection.find().sort(new Document("upload", -1)).first().getString("upload");
+        return uploadDate == null ? "" : uploadDate;
     }
 }
