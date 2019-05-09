@@ -1,20 +1,15 @@
 package converter;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import converter.database.Database;
-import converter.downloader.Downloader;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Scanner;
 
 public class AppController {
     //Textfield to get the amount to be converted
@@ -36,6 +31,9 @@ public class AppController {
     @FXML
     private Text latestUpdateDate;
 
+    @FXML
+    private ImageView statusImageView;
+
     private Database database;
 
     //Default Constructor
@@ -50,19 +48,12 @@ public class AppController {
         targetComboBox.getItems().setAll(Currency.values());
 
         //Display the date and time of the latest download
-        latestUpdateDate.setText(database.getLatestUploadDate());
+        latestUpdateDate.setText(database.getUploadDate());
+        statusImageView.setVisible(false);
     }
 
     @FXML
-    private void convert() throws FileNotFoundException {
-        String source = sourceComboBox.getValue().getCode();
-        String target = targetComboBox.getValue().getCode();
-        double rate = getRate(source, target) * Double.parseDouble(inputText.getText());
-        outputText.setText(Double.toString(rate));
-    }
-
-    @FXML
-    private void instantUpdate(KeyEvent event) throws IOException {
+    private void instantUpdate(KeyEvent event) {
         //Update the ouputText when a number is entered or when inputText is modified
         if (event.getCode() == KeyCode.DIGIT0 || event.getCode() == KeyCode.DIGIT1 || event.getCode() == KeyCode.DIGIT2 || event.getCode() == KeyCode.DIGIT3 || event.getCode() == KeyCode.DIGIT4 || event.getCode() == KeyCode.DIGIT5 || event.getCode() == KeyCode.DIGIT6 || event.getCode() == KeyCode.DIGIT7 || event.getCode() == KeyCode.DIGIT8 || event.getCode() == KeyCode.DIGIT9) {
             convert();
@@ -80,19 +71,44 @@ public class AppController {
         }
     }
 
-    private JsonObject fetchRates(String sourceCurrency) throws FileNotFoundException {
-        // retrieve entire file and place into a single string
-        Scanner input = new Scanner(new File(Downloader.SAVE_DIRECTORY + sourceCurrency + ".json")).useDelimiter("\\Z");
-        String jsonString = input.next();
+    private void showStatus(String previousUpload, double rate, double previousRate) {
+        statusImageView.setVisible(true);
+        Tooltip tooltip = new Tooltip();
+        double difference = rate - previousRate;
 
-        // parse json string
-        JsonParser parser = new JsonParser();
-        JsonObject rates = parser.parse(jsonString).getAsJsonObject();
-        return rates;
+        if (difference > 0) {
+            tooltip.setText(String.format("Rate up by %f since last update %s", difference, previousUpload));
+            statusImageView.setImage(Status.UP.getImage());
+        }
+        if (difference < 0) {
+            tooltip.setText(String.format("Rate down by %f since last update %s", difference, previousUpload));
+            statusImageView.setImage(Status.DOWN.getImage());
+        }
+        if (difference == 0) {
+            tooltip.setText(String.format("Rate unchanged since last update %s", previousUpload));
+            statusImageView.setImage(Status.UNCHANGED.getImage());
+        }
+
+        Tooltip.install(statusImageView, tooltip);
     }
 
-    protected double getRate(String sourceCurrency, String targetCurrency) throws FileNotFoundException {
-        JsonObject rates = fetchRates(sourceCurrency);
+    private void convert() {
+        String source = sourceComboBox.getValue().getCode();
+        String target = targetComboBox.getValue().getCode();
+        double currentRate = getRate(source, target);
+        double result = currentRate * Double.parseDouble(inputText.getText());
+        outputText.setText(Double.toString(result));
+        double previousRate = getRate(source, target, 1);
+        String previousUpload = database.getUploadDate(1);
+        showStatus(previousUpload, currentRate, previousRate);
+    }
+
+    protected double getRate(String sourceCurrency, String targetCurrency) {
+        return getRate(sourceCurrency, targetCurrency, 0);
+    }
+
+    protected double getRate(String sourceCurrency, String targetCurrency, int num) {
+        JsonObject rates = database.getCurrencyData(sourceCurrency, num);
         double rate = rates.getAsJsonObject(targetCurrency).get("rate").getAsDouble();
         return rate;
     }

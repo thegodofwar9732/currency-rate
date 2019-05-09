@@ -44,8 +44,7 @@ public class CurrencyConverterApp extends Application {
      */
     private boolean downloadedToday (String localDate) {
     	Database database = new Database();
-        String downloadDate = database.getLatestUploadDate();
-    	System.out.println(downloadDate);
+        String downloadDate = database.getUploadDate();
         return localDate.equals(downloadDate);
     }
     
