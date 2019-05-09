@@ -9,6 +9,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.text.Text;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,8 +32,9 @@ public class AppController {
     @FXML
     private ComboBox<Currency> targetComboBox;
 
+    //Textbox to display the date and time of the last download
     @FXML
-    private TextField LatestUpdate;
+    private Text latestUpdateDate;
 
     private Database database;
 
@@ -46,7 +48,9 @@ public class AppController {
         //Initialize the ChoiceBoxes with the currencies.
         sourceComboBox.getItems().setAll(Currency.values());
         targetComboBox.getItems().setAll(Currency.values());
-        LatestUpdate.setText(database.getLatestUploadDate());
+
+        //Display the date and time of the latest download
+        latestUpdateDate.setText(database.getLatestUploadDate());
     }
 
     @FXML

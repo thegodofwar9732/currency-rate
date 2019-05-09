@@ -1,33 +1,27 @@
 package converter;
 
-import converter.downloader.ScheduledDownloadTask;
+import converter.database.Database;
+import converter.downloader.Downloader;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.util.Calendar;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class CurrencyConverterApp extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-
-        //Download at midnight
-        Timer timer = new Timer();
-        TimerTask task = new ScheduledDownloadTask();
-
-        Calendar today = Calendar.getInstance();
-        today.set(Calendar.HOUR_OF_DAY, 0); // midnight
-        today.set(Calendar.MINUTE, 0); // 0 minutes
-        today.set(Calendar.SECOND, 0); // 0 seconds
-
-        timer.schedule(task, today.getTime(), TimeUnit.HOURS.toMillis(24));
-
+    public void start(Stage primaryStage) throws Exception {        
+    	//If the file has already been downloaded today, it won't be downloaded again
+    	String dateNow = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
+        if (!downloadedToday(dateNow)) {
+        	Downloader downloader = new Downloader();
+        	downloader.downloadFile(dateNow);
+        }
+     
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/appview.fxml"));
         Scene scene = new Scene(root);
         primaryStage.setTitle("Currency Converter");
@@ -38,4 +32,17 @@ public class CurrencyConverterApp extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+    
+    /**
+     * Checks to see if the file has already been downloaded today
+     * @param localDate - todays date as a string
+     * @return - true if the download date matches today's date, false if not
+     */
+    private boolean downloadedToday (String localDate) {
+    	Database database = new Database();
+        String downloadDate = database.getLatestUploadDate();
+    	System.out.println(downloadDate);
+        return localDate.equals(downloadDate);
+    }
+    
 }
