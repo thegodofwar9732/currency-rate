@@ -34,7 +34,7 @@ public class AppController {
 
     //Textbox to display the date and time of the last download
     @FXML
-    private Text LatestUpdate;
+    private Text latestUpdateDate;
 
     private Database database;
 
@@ -50,7 +50,7 @@ public class AppController {
         targetComboBox.getItems().setAll(Currency.values());
 
         //Display the date and time of the latest download
-        LatestUpdate.setText(database.getLatestUploadDate());
+        latestUpdateDate.setText(database.getLatestUploadDate());
     }
 
     @FXML
