@@ -34,14 +34,14 @@ public class CurrencyConverterApp extends Application {
     }
     
     /**
+     * protected so we can run tests on it
      * Checks to see if the file has already been downloaded today
      * @param localDate - todays date as a string
      * @return - true if the download date matches today's date, false if not
      */
-    private boolean downloadedToday (String localDate) {
+    protected boolean downloadedToday (String localDate) {
     	Database database = new Database();
         String downloadDate = database.getLatestUploadDate();
-    	System.out.println(downloadDate);
         return localDate.equals(downloadDate);
     }
     

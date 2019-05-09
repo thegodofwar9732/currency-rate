@@ -62,4 +62,13 @@ public class Database {
     public String getLatestUploadDate() {
         return collection.find().sort(new Document("upload", -1)).first().getString("upload");
     }
+    
+    /**
+     * get the collection
+     * to use for testing
+     * @return the collection
+     */
+    public MongoCollection<Document> getTheCollection() {
+    	return collection;
+    }
 }
