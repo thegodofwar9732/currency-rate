@@ -10,6 +10,8 @@ import javafx.stage.Stage;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CurrencyConverterApp extends Application {
 
@@ -30,6 +32,8 @@ public class CurrencyConverterApp extends Application {
     }
 
     public static void main(String[] args) {
+        Logger mongoLogger = Logger.getLogger( "org.mongodb.driver" );
+        mongoLogger.setLevel(Level.SEVERE);
         launch(args);
     }
     
