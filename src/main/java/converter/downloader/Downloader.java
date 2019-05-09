@@ -40,7 +40,7 @@ public class Downloader {
      *
      * @param currency the name of currency file
      * @param source   the url where the currency file is located
-     * @throws IOException if cant write to file
+     * @throws IOException if can't write to file
      */
     private void download(Currency currency, URL source) throws IOException {
         String fileName = currency.getCode() + ".json";
