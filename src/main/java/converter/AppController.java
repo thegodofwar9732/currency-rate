@@ -47,8 +47,6 @@ public class AppController {
         sourceComboBox.getItems().setAll(Currency.values());
         targetComboBox.getItems().setAll(Currency.values());
 
-        //Display the date and time of the latest download
-        latestUpdateDate.setText(database.getUploadDate());
         statusImageView.setVisible(false);
     }
 
@@ -69,6 +67,10 @@ public class AppController {
         } else {
             outputText.setText("0");
         }
+    }
+
+    public void setDate(String date) {
+        latestUpdateDate.setText(date);
     }
 
     private void showStatus(String previousUpload, double rate, double previousRate) {

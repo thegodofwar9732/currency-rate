@@ -16,17 +16,22 @@ import java.util.logging.Logger;
 public class CurrencyConverterApp extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception {        
+    public void start(Stage primaryStage) throws Exception {
     	//If the file has already been downloaded today, it won't be downloaded again
     	String dateNow = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
         if (!downloadedToday(dateNow)) {
         	Downloader downloader = new Downloader();
         	downloader.downloadFile(dateNow);
         }
-     
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/appview.fxml"));
-        Scene scene = new Scene(root);
+
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/appview.fxml"));
+        Parent root = fxmlLoader.load();
         primaryStage.setTitle("Currency Converter");
+
+        AppController appController = fxmlLoader.getController();
+        appController.setDate(dateNow);
+
+        Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -36,7 +41,7 @@ public class CurrencyConverterApp extends Application {
         mongoLogger.setLevel(Level.SEVERE);
         launch(args);
     }
-    
+
     /**
      * Checks to see if the file has already been downloaded today
      * @param localDate - todays date as a string
@@ -47,5 +52,4 @@ public class CurrencyConverterApp extends Application {
         String downloadDate = database.getUploadDate();
         return localDate.equals(downloadDate);
     }
-    
 }
