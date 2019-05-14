@@ -2,6 +2,9 @@ package converter;
 
 import static org.junit.Assert.assertEquals;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -13,6 +16,7 @@ class CurrencyConverterAppTest {
 	CurrencyConverterApp app;
 	static boolean expected;
     static boolean actual;
+    String dateNow;
 	
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
@@ -45,9 +49,12 @@ class CurrencyConverterAppTest {
         assertEquals("Failed to compare download date", expected, actual);
 	}
 	
+	//This test will fail unless the file has been downloaded today 
+	//and the database has been updated
 	@Test
 	void testDownloadedTodayWithRighDate() {
-		actual = app.downloadedToday("2019-05-09");
+		dateNow = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
+		actual = app.downloadedToday(dateNow);
 		expected = true;
         assertEquals("Failed to compare download date", expected, actual);
 	}
