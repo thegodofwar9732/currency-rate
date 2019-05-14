@@ -11,13 +11,17 @@ import static org.junit.Assert.assertEquals;
 
 public class AppControllerTest {
 
-    Downloader download;
-    AppController controller;
+    static Downloader download;
+    static AppController controller;
     static double expected;
     static double actual;
 
     @BeforeClass
     public static void setUpBeforeClass() {
+    	 controller = new AppController();
+         download = new Downloader();
+         download.downloadFile(LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE));
+     
     }
 
     @AfterClass
@@ -26,9 +30,6 @@ public class AppControllerTest {
 
     @Before
     public void setUp() {
-        controller = new AppController();
-        download = new Downloader();
-        download.downloadFile(LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE));
     }
 
     @After
