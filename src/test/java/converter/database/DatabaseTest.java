@@ -37,8 +37,8 @@ class DatabaseTest {
 
 	@Test
 	void testgetCurrencyDataUSD() {
-		actual = database.getCurrencyData("usd");
-		String currencyJsonString = database.getTheCollection().find(eq("upload", database.getLatestUploadDate())).first().toJson();
+		actual = database.getCurrencyData("usd", 0);
+		String currencyJsonString = database.getTheCollection().find(eq("upload", database.getUploadDate())).first().toJson();
         JsonParser parser = new JsonParser();
         expected = parser.parse(currencyJsonString).getAsJsonObject().getAsJsonObject("files").getAsJsonObject("usd");
         assertEquals(expected, actual);
@@ -46,8 +46,8 @@ class DatabaseTest {
 	
 	@Test
 	void testgetCurrencyDataGBP() {
-		actual = database.getCurrencyData("gbp");
-		String currencyJsonString = database.getTheCollection().find(eq("upload", database.getLatestUploadDate())).first().toJson();
+		actual = database.getCurrencyData("gbp", 0);
+		String currencyJsonString = database.getTheCollection().find(eq("upload", database.getUploadDate())).first().toJson();
         JsonParser parser = new JsonParser();
         expected = parser.parse(currencyJsonString).getAsJsonObject().getAsJsonObject("files").getAsJsonObject("gbp");
         assertEquals(expected, actual);
@@ -55,8 +55,8 @@ class DatabaseTest {
 	
 	@Test
 	void testgetCurrencyDataGBPUSD() {
-		actual = database.getCurrencyData("gbp");
-		String currencyJsonString = database.getTheCollection().find(eq("upload", database.getLatestUploadDate())).first().toJson();
+		actual = database.getCurrencyData("gbp", 0);
+		String currencyJsonString = database.getTheCollection().find(eq("upload", database.getUploadDate())).first().toJson();
         JsonParser parser = new JsonParser();
         expected = parser.parse(currencyJsonString).getAsJsonObject().getAsJsonObject("files").getAsJsonObject("usd");
         assertNotEquals(expected, actual);
