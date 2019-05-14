@@ -4,9 +4,9 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class AppControllerTest {
+public class ParserTest {
 
     @Test
-    public void setDate() {
+    public void getRate() {
     }
 }
