@@ -27,7 +27,7 @@
         <ComboBox fx:id="sourceComboBox" layoutX="41.0" layoutY="147.0" prefHeight="29.0" prefWidth="162.0"
                   promptText="Convert From"/>
         <ComboBox fx:id="targetComboBox" layoutX="333.0" layoutY="147.0" prefHeight="29.0" prefWidth="162.0"
-                  promptText="Convert To"/>
+                  promptText="Convert To" onAction="#edit"/>
         <Text layoutX="261.0" layoutY="244.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Latest Update:"/>
         <Text fx:id="latestUpdateDate" layoutX="357.0" layoutY="243.0" strokeType="OUTSIDE" strokeWidth="0.0"
               wrappingWidth="114.92447582632303"/>

@@ -2,6 +2,8 @@ package converter;
 
 import com.google.gson.JsonObject;
 import converter.database.Database;
+
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -46,29 +48,55 @@ public class AppController {
         //Initialize the ChoiceBoxes with the currencies.
         sourceComboBox.getItems().setAll(Currency.values());
         targetComboBox.getItems().setAll(Currency.values());
-
+        //Input text make disable when initialize
+        inputText.setEditable(false);
+        outputText.setEditable(false);
         statusImageView.setVisible(false);
+        
     }
-
+    
+    @FXML
+    private void edit(Event event){
+    	inputText.setEditable(true);
+    }
+    
     @FXML
     private void instantUpdate(KeyEvent event) {
         //Update the ouputText when a number is entered or when inputText is modified
-        if (event.getCode() == KeyCode.DIGIT0 || event.getCode() == KeyCode.DIGIT1 || event.getCode() == KeyCode.DIGIT2 || event.getCode() == KeyCode.DIGIT3 || event.getCode() == KeyCode.DIGIT4 || event.getCode() == KeyCode.DIGIT5 || event.getCode() == KeyCode.DIGIT6 || event.getCode() == KeyCode.DIGIT7 || event.getCode() == KeyCode.DIGIT8 || event.getCode() == KeyCode.DIGIT9) {
+    	if(inputText.getText().isEmpty()) {
+    		outputText.setText(":(");
+    	}
+    	else if (event.getCode() == KeyCode.DIGIT0 || event.getCode() == KeyCode.DIGIT1 || event.getCode() == KeyCode.DIGIT2 || event.getCode() == KeyCode.DIGIT3 || event.getCode() == KeyCode.DIGIT4 || event.getCode() == KeyCode.DIGIT5 || event.getCode() == KeyCode.DIGIT6 || event.getCode() == KeyCode.DIGIT7 || event.getCode() == KeyCode.DIGIT8 || event.getCode() == KeyCode.DIGIT9) {
             convert();
-        } else if (event.getCode() == KeyCode.BACK_SPACE && !inputText.getText().isEmpty()) {
+            
+        }else if(event.getCode() == KeyCode.BACK_SPACE && !inputText.getText().isEmpty()) {
 
             if (!(Double.parseDouble(inputText.getText()) <= 0) && inputText.getText() != null && inputText.getText().length() != 0) {
                 convert();
             } else if (event.getCode() == KeyCode.BACK_SPACE && inputText.getText().length() == 0) {
                 outputText.setText("0");
             }
+            
         } else if (event.getCode() == KeyCode.UNDEFINED) {
             outputText.setText("0");
+            
         } else {
-            outputText.setText("0");
+        	inputFilter();
+        	clearInputText();
         }
     }
-
+    
+    private void inputFilter() {
+    	if(Double.isNaN(Double.parseDouble(inputText.getText()))) {
+    		//alert user
+    		outputText.setText("0");
+    		inputText.setText("0");
+    	}
+    }
+    private void clearInputText() {
+    	outputText.setText("0");
+		inputText.setText("0");
+    }
     public void setDate(String date) {
         latestUpdateDate.setText(date);
     }
@@ -95,9 +123,17 @@ public class AppController {
     }
 
     private void convert() {
+    	//put inputFilter methods here ,,
+    	inputFilter();
         String source = sourceComboBox.getValue().getCode();
         String target = targetComboBox.getValue().getCode();
-        double currentRate = getRate(source, target);
+        //if user silly the same source and target
+        if(source.equals(target)) {
+        	outputText.setText(inputText.getText());
+        	return;
+        }
+        System.out.println("Source:"+ target);
+        double currentRate = getRate(source, target);        
         double result = currentRate * Double.parseDouble(inputText.getText());
         outputText.setText(Double.toString(result));
         double previousRate = getRate(source, target, 1);
