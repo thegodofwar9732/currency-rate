@@ -67,6 +67,7 @@ public class AppController {
         statusImageView.setVisible(false);
         inputText.setText(input);
 
+        // add listener when user changes selection in ComboBox
         sourceComboBox.valueProperty().addListener((option, oldValue, newValue) -> {
             sourceCurrency = newValue.getCode();
             if (targetCurrency != null) {
@@ -158,6 +159,14 @@ public class AppController {
         latestUpdateDate.setText(date);
     }
 
+    /**
+     * show rate indicator with tooltip
+     *
+     * @throws ParserConfigurationException if unable to create Document
+     * @throws IOException                  if url is invalid
+     * @throws SAXException                 if response is not xml format
+     * @throws XPathExpressionException     if expression is invalid
+     */
     private void showStatus() throws ParserConfigurationException, SAXException, XPathExpressionException, IOException {
         double previousRate = apiClient.getYesterdayRate(sourceCurrency, targetCurrency);
         rate = apiClient.getCurrentRate(sourceCurrency, targetCurrency);
