@@ -10,6 +10,9 @@ import org.junit.jupiter.api.Test;
 
 class CurrencyTest {
 
+	String expected;
+	String actual;
+	
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
 	}
@@ -27,11 +30,23 @@ class CurrencyTest {
 	}
 
     @Test
-    public void getCode() {
+    public void getCodeEuro() {
+    	expected = "EUR (Euro)";
+    	actual = Currency.EUR.toString();
+    	assertEquals(expected, actual);
     }
-
+    
     @Test
-    public void toString1() {
+    public void getCodeDollars() {
+    	expected = "USD (U.S.Dollar)";
+    	actual = Currency.USD.toString();
+    	assertEquals(expected, actual);
     }
-
+    
+    @Test
+    public void getCodeDollarsEuros() {
+    	expected = "USD (U.S.Dollar)";
+    	actual = Currency.EUR.toString();
+    	assertNotEquals(expected, actual);
+    }
 }
