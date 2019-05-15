@@ -29,24 +29,60 @@ class CurrencyTest {
 	void tearDown() throws Exception {
 	}
 
+    @Test 
+    public void GetCodeEuro(){
+    	expected = "eur";
+    	actual = Currency.EUR.getCode();
+    	assertEquals(expected, actual);
+    }
+    
     @Test
-    public void getCodeEuro() {
+    public void getCodeDollars() {
+    	expected = "usd";
+    	actual = Currency.USD.getCode();
+    	assertEquals(expected, actual);
+    }
+    
+    @Test
+    public void getCodeDollarsWrong() {
+    	expected = "USD (U.S.Dollar)";
+    	actual = Currency.USD.getCode();
+    	assertNotEquals(expected, actual);
+    }
+    
+    @Test
+    public void getCodeDollarsEuros() {
+    	expected = "usd";
+    	actual = Currency.EUR.getCode();
+    	assertNotEquals(expected, actual);
+    }
+	
+	@Test
+    public void toStringEuro() {
     	expected = "EUR (Euro)";
     	actual = Currency.EUR.toString();
     	assertEquals(expected, actual);
     }
     
     @Test
-    public void getCodeDollars() {
+    public void toStringDollars() {
     	expected = "USD (U.S.Dollar)";
     	actual = Currency.USD.toString();
     	assertEquals(expected, actual);
     }
     
     @Test
-    public void getCodeDollarsEuros() {
+    public void toStringDollarsEuros() {
     	expected = "USD (U.S.Dollar)";
     	actual = Currency.EUR.toString();
     	assertNotEquals(expected, actual);
     }
+    
+    @Test
+    public void toStringDollarsWrong() {
+    	expected = "usd";
+    	actual = Currency.USD.toString();
+    	assertNotEquals(expected, actual);
+    }
+    
 }
