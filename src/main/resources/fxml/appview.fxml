@@ -32,7 +32,7 @@
         <Text fx:id="latestUpdateDate" layoutX="357.0" layoutY="243.0" strokeType="OUTSIDE" strokeWidth="0.0"
               wrappingWidth="114.92447582632303"/>
         <Text layoutX="27.0" layoutY="294.0" strokeType="OUTSIDE" strokeWidth="0.0"
-              text="Downloaded From: http://www.floatrates.com/daily/usd.xml"/>
+              text="Source: http://www.floatrates.com/"/>
         <ImageView fx:id="statusImageView" cache="true" fitHeight="15.0" fitWidth="15.0" layoutX="508.0" layoutY="100.0"
                    pickOnBounds="true" preserveRatio="true">
         </ImageView>

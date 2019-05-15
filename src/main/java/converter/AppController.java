@@ -1,7 +1,5 @@
 package converter;
 
-import com.google.gson.JsonObject;
-import converter.database.Database;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -10,6 +8,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpressionException;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class AppController {
     //Textfield to get the amount to be converted
@@ -34,11 +39,11 @@ public class AppController {
     @FXML
     private ImageView statusImageView;
 
-    private Database database;
+    private ApiClient apiClient;
 
     //Default Constructor
     public AppController() {
-        database = new Database();
+        apiClient = new ApiClient();
     }
 
     @FXML
@@ -51,7 +56,8 @@ public class AppController {
     }
 
     @FXML
-    private void instantUpdate(KeyEvent event) {
+
+    private void instantUpdate(KeyEvent event) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
         //Update the outputText when a number is entered or when inputText is modified
         if (event.getCode() == KeyCode.DIGIT0 || event.getCode() == KeyCode.DIGIT1 || event.getCode() == KeyCode.DIGIT2 || event.getCode() == KeyCode.DIGIT3 || event.getCode() == KeyCode.DIGIT4 || event.getCode() == KeyCode.DIGIT5 || event.getCode() == KeyCode.DIGIT6 || event.getCode() == KeyCode.DIGIT7 || event.getCode() == KeyCode.DIGIT8 || event.getCode() == KeyCode.DIGIT9) {
             convert();
@@ -94,24 +100,16 @@ public class AppController {
         Tooltip.install(statusImageView, tooltip);
     }
 
-    private void convert() {
+    private void convert() throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
         String source = sourceComboBox.getValue().getCode();
         String target = targetComboBox.getValue().getCode();
-        double currentRate = getRate(source, target);
+        double currentRate = apiClient.getCurrentRate(source, target);
         double result = currentRate * Double.parseDouble(inputText.getText());
+
         outputText.setText(Double.toString(result));
-        double previousRate = getRate(source, target, 1);
-        String previousUpload = database.getUploadDate(1);
-        showStatus(previousUpload, currentRate, previousRate);
-    }
 
-    protected double getRate(String sourceCurrency, String targetCurrency) {
-        return getRate(sourceCurrency, targetCurrency, 0);
-    }
-
-    protected double getRate(String sourceCurrency, String targetCurrency, int num) {
-        JsonObject rates = database.getCurrencyData(sourceCurrency, num);
-        double rate = rates.getAsJsonObject(targetCurrency).get("rate").getAsDouble();
-        return rate;
+        double previousRate = apiClient.getYesterdayRate(source, target);
+        String yesterday = LocalDate.now().minusDays(1).format(DateTimeFormatter.ISO_LOCAL_DATE);
+        showStatus(yesterday, currentRate, previousRate);
     }
 }
