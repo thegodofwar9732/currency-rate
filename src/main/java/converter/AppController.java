@@ -56,8 +56,9 @@ public class AppController {
     }
 
     @FXML
+
     private void instantUpdate(KeyEvent event) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
-        //Update the ouputText when a number is entered or when inputText is modified
+        //Update the outputText when a number is entered or when inputText is modified
         if (event.getCode() == KeyCode.DIGIT0 || event.getCode() == KeyCode.DIGIT1 || event.getCode() == KeyCode.DIGIT2 || event.getCode() == KeyCode.DIGIT3 || event.getCode() == KeyCode.DIGIT4 || event.getCode() == KeyCode.DIGIT5 || event.getCode() == KeyCode.DIGIT6 || event.getCode() == KeyCode.DIGIT7 || event.getCode() == KeyCode.DIGIT8 || event.getCode() == KeyCode.DIGIT9) {
             convert();
         } else if (event.getCode() == KeyCode.BACK_SPACE && !inputText.getText().isEmpty()) {
