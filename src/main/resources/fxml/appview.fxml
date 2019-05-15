@@ -18,16 +18,16 @@
             </font>
         </Label>
 
-        <TextField fx:id="inputText" layoutX="41.0" layoutY="93.0" onKeyReleased="#instantUpdate" text="0"/>
+        <TextField fx:id="inputText" layoutX="41.0" layoutY="93.0" onKeyReleased="#instantUpdate"/>
         <TextField fx:id="outputText" layoutX="332.0" layoutY="93.0"/>
         <Rectangle arcHeight="5.0" arcWidth="5.0" height="7.0" layoutX="246.0" layoutY="128.0" stroke="BLACK"
                    strokeType="INSIDE" width="45.0"/>
         <Rectangle arcHeight="5.0" arcWidth="5.0" height="7.0" layoutX="246.0" layoutY="142.0" stroke="BLACK"
                    strokeType="INSIDE" width="45.0"/>
         <ComboBox fx:id="sourceComboBox" layoutX="41.0" layoutY="147.0" prefHeight="29.0" prefWidth="162.0"
-                  promptText="Convert From"/>
+                  promptText="Convert From" onAction="#inputEditEnabler"/>
         <ComboBox fx:id="targetComboBox" layoutX="333.0" layoutY="147.0" prefHeight="29.0" prefWidth="162.0"
-                  promptText="Convert To"/>
+                  promptText="Convert To" onAction="#outputEditConverter"/>
         <Text layoutX="261.0" layoutY="244.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Latest Update:"/>
         <Text fx:id="latestUpdateDate" layoutX="357.0" layoutY="243.0" strokeType="OUTSIDE" strokeWidth="0.0"
               wrappingWidth="114.92447582632303"/>
