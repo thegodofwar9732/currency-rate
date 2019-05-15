@@ -57,6 +57,9 @@ public class AppController {
     
     @FXML
     private void inputEditEnabler(Event event){
+       	if(isInvalidInput()) {
+    		return;
+    	}
     	inputText.setEditable(true);
     	convert();
     }
@@ -64,16 +67,19 @@ public class AppController {
     //outputEditConverter
     @FXML
     private void outputEditConverter(Event event){
+    	if(isInvalidInput()) {
+    		return;
+    	}
     	convert();
     }
     
     @FXML
     private void instantUpdate(KeyEvent event) {
         //Update the ouputText when a number is entered or when inputText is modified
-    	if(inputText.getText().isEmpty()) {
-    		outputText.setText(":(");
+    	if(isInvalidInput()) {
+    		return;
     	}
-    	else if (event.getCode() == KeyCode.DIGIT0 || event.getCode() == KeyCode.DIGIT1 || event.getCode() == KeyCode.DIGIT2 || event.getCode() == KeyCode.DIGIT3 || event.getCode() == KeyCode.DIGIT4 || event.getCode() == KeyCode.DIGIT5 || event.getCode() == KeyCode.DIGIT6 || event.getCode() == KeyCode.DIGIT7 || event.getCode() == KeyCode.DIGIT8 || event.getCode() == KeyCode.DIGIT9) {
+    	if (event.getCode() == KeyCode.DIGIT0 || event.getCode() == KeyCode.DIGIT1 || event.getCode() == KeyCode.DIGIT2 || event.getCode() == KeyCode.DIGIT3 || event.getCode() == KeyCode.DIGIT4 || event.getCode() == KeyCode.DIGIT5 || event.getCode() == KeyCode.DIGIT6 || event.getCode() == KeyCode.DIGIT7 || event.getCode() == KeyCode.DIGIT8 || event.getCode() == KeyCode.DIGIT9) {
             convert();
             
         }else if(event.getCode() == KeyCode.BACK_SPACE && !inputText.getText().isEmpty()) {
@@ -84,26 +90,33 @@ public class AppController {
                 outputText.setText("0");
             }
             
-        } else if (event.getCode() == KeyCode.UNDEFINED) {
-            outputText.setText("0");
-            
-        } else {
-   
-        	clearInputText();
+        }
+        else if (event.getCode() == KeyCode.UNDEFINED) {
+            return;
         }
     }
     
-    private void inputFilter() {
-    	if(Double.isNaN(Double.parseDouble(inputText.getText()))) {
-    		//alert user
-    		outputText.setText("0");
-    		inputText.setText("0");
+    private boolean isInvalidInput() {
+
+    	if(inputText.getText().isEmpty()) {
+    		outputText.setText("");
+    		return true;
     	}
+    	boolean numeric = true;
+    	try {
+    		Double num =  Double.parseDouble(inputText.getText());
+        } catch (NumberFormatException e) {
+            numeric = false;
+        }
+    	if(!numeric) {
+    		outputText.setText("Characters are Not Allowed.");
+    		return true;
+    	}
+    	
+    	return false;
+    	
     }
-    private void clearInputText() {
-    	outputText.setText("0");
-		inputText.setText("0");
-    }
+    
     public void setDate(String date) {
         latestUpdateDate.setText(date);
     }
@@ -130,22 +143,23 @@ public class AppController {
     }
 
     private void convert() {
-    	//put inputFilter methods here ,,
-    	inputFilter();
+   
+    	if(isInvalidInput()) {
+    		return;
+    	}
         String source = sourceComboBox.getValue().getCode();
         String target = targetComboBox.getValue().getCode();
-        //if user silly the same source and target
+        //if user pick the same source and target
         if(source.equals(target)) {
         	outputText.setText(inputText.getText());
         	return;
         }
-        System.out.println("Source:"+ target);
         double currentRate = getRate(source, target);        
         double result = currentRate * Double.parseDouble(inputText.getText());
         outputText.setText(Double.toString(result));
         double previousRate = getRate(source, target, 1);
-        //String previousUpload = database.getUploadDate(1);
-        //showStatus(previousUpload, currentRate, previousRate);
+        String previousUpload = database.getUploadDate(1);
+        showStatus(previousUpload, currentRate, previousRate);
     }
 
     protected double getRate(String sourceCurrency, String targetCurrency) {
