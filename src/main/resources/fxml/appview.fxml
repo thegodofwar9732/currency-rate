@@ -18,7 +18,7 @@
             </font>
         </Label>
 
-        <TextField fx:id="inputText" layoutX="41.0" layoutY="93.0" onKeyReleased="#instantUpdate" text="0"/>
+        <TextField fx:id="inputText" layoutX="41.0" layoutY="93.0" onKeyReleased="#instantUpdate"/>
         <TextField fx:id="outputText" layoutX="332.0" layoutY="93.0"/>
         <Rectangle arcHeight="5.0" arcWidth="5.0" height="7.0" layoutX="246.0" layoutY="128.0" stroke="BLACK"
                    strokeType="INSIDE" width="45.0"/>
@@ -32,7 +32,7 @@
         <Text fx:id="latestUpdateDate" layoutX="357.0" layoutY="243.0" strokeType="OUTSIDE" strokeWidth="0.0"
               wrappingWidth="114.92447582632303"/>
         <Text layoutX="27.0" layoutY="294.0" strokeType="OUTSIDE" strokeWidth="0.0"
-              text="Downloaded From: http://www.floatrates.com/daily/usd.xml"/>
+              text="Source: http://www.floatrates.com/"/>
         <ImageView fx:id="statusImageView" cache="true" fitHeight="15.0" fitWidth="15.0" layoutX="508.0" layoutY="100.0"
                    pickOnBounds="true" preserveRatio="true">
         </ImageView>

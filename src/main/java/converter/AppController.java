@@ -12,6 +12,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpressionException;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class AppController {
     //Textfield to get the amount to be converted
@@ -36,11 +43,20 @@ public class AppController {
     @FXML
     private ImageView statusImageView;
 
-    private Database database;
+    private ApiClient apiClient;
+
+    private String input;
+    private double rate;
+    private String sourceCurrency;
+    private String targetCurrency;
+    private String yesterday;
 
     //Default Constructor
     public AppController() {
-        database = new Database();
+        apiClient = new ApiClient();
+        yesterday = LocalDate.now().minusDays(1).format(DateTimeFormatter.ISO_LOCAL_DATE);
+        input = "1";
+        rate = 1;
     }
 
     @FXML
@@ -52,9 +68,34 @@ public class AppController {
         inputText.setEditable(false);
         outputText.setEditable(false);
         statusImageView.setVisible(false);
-        
+        inputText.setText(input);
+
+        sourceComboBox.valueProperty().addListener((option, oldValue, newValue) -> {
+            sourceCurrency = newValue.getCode();
+            if (targetCurrency != null) {
+                try {
+                    showStatus();
+                    convert();
+                } catch (ParserConfigurationException | SAXException | XPathExpressionException | IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        targetComboBox.valueProperty().addListener((option, oldvalue, newvalue) -> {
+            targetCurrency = newvalue.getCode();
+            if (sourceCurrency != null) {
+                try {
+                    showStatus();
+                    convert();
+                } catch (ParserConfigurationException | SAXException | XPathExpressionException | IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
     }
-    
+
     @FXML
     private void inputEditEnabler(Event event){
        	if(isInvalidInput()) {
@@ -63,7 +104,7 @@ public class AppController {
     	inputText.setEditable(true);
     	convert();
     }
-    
+
     //outputEditConverter
     @FXML
     private void outputEditConverter(Event event){
@@ -72,7 +113,7 @@ public class AppController {
     	}
     	convert();
     }
-    
+
     @FXML
     private void instantUpdate(KeyEvent event) {
         //Update the ouputText when a number is entered or when inputText is modified
@@ -81,7 +122,7 @@ public class AppController {
     	}
     	if (event.getCode() == KeyCode.DIGIT0 || event.getCode() == KeyCode.DIGIT1 || event.getCode() == KeyCode.DIGIT2 || event.getCode() == KeyCode.DIGIT3 || event.getCode() == KeyCode.DIGIT4 || event.getCode() == KeyCode.DIGIT5 || event.getCode() == KeyCode.DIGIT6 || event.getCode() == KeyCode.DIGIT7 || event.getCode() == KeyCode.DIGIT8 || event.getCode() == KeyCode.DIGIT9) {
             convert();
-            
+
         }else if(event.getCode() == KeyCode.BACK_SPACE && !inputText.getText().isEmpty()) {
 
             if (!(Double.parseDouble(inputText.getText()) <= 0) && inputText.getText() != null && inputText.getText().length() != 0) {
@@ -89,13 +130,13 @@ public class AppController {
             } else if (event.getCode() == KeyCode.BACK_SPACE && inputText.getText().length() == 0) {
                 outputText.setText("0");
             }
-            
+
         }
         else if (event.getCode() == KeyCode.UNDEFINED) {
             return;
         }
     }
-    
+
     private boolean isInvalidInput() {
 
     	if(inputText.getText().isEmpty()) {
@@ -112,30 +153,33 @@ public class AppController {
     		outputText.setText("Characters are Not Allowed.");
     		return true;
     	}
-    	
+
     	return false;
-    	
+
     }
-    
+
     public void setDate(String date) {
         latestUpdateDate.setText(date);
     }
 
-    private void showStatus(String previousUpload, double rate, double previousRate) {
+    private void showStatus() throws ParserConfigurationException, SAXException, XPathExpressionException, IOException {
+        double previousRate = apiClient.getYesterdayRate(sourceCurrency, targetCurrency);
+        rate = apiClient.getCurrentRate(sourceCurrency, targetCurrency);
+
         statusImageView.setVisible(true);
         Tooltip tooltip = new Tooltip();
         double difference = rate - previousRate;
 
         if (difference > 0) {
-            tooltip.setText(String.format("Rate up by %f since last update %s", difference, previousUpload));
+            tooltip.setText(String.format("Rate up by %f since last update %s", difference, yesterday));
             statusImageView.setImage(Status.UP.getImage());
         }
         if (difference < 0) {
-            tooltip.setText(String.format("Rate down by %f since last update %s", difference, previousUpload));
+            tooltip.setText(String.format("Rate down by %f since last update %s", difference, yesterday));
             statusImageView.setImage(Status.DOWN.getImage());
         }
         if (difference == 0) {
-            tooltip.setText(String.format("Rate unchanged since last update %s", previousUpload));
+            tooltip.setText(String.format("Rate unchanged since last update %s", yesterday));
             statusImageView.setImage(Status.UNCHANGED.getImage());
         }
 
@@ -143,7 +187,7 @@ public class AppController {
     }
 
     private void convert() {
-   
+
     	if(isInvalidInput()) {
     		return;
     	}
@@ -154,21 +198,10 @@ public class AppController {
         	outputText.setText(inputText.getText());
         	return;
         }
-        double currentRate = getRate(source, target);        
+        double currentRate = getRate(source, target);
         double result = currentRate * Double.parseDouble(inputText.getText());
+        double result = rate * Double.parseDouble(inputText.getText());
+
         outputText.setText(Double.toString(result));
-        double previousRate = getRate(source, target, 1);
-        String previousUpload = database.getUploadDate(1);
-        showStatus(previousUpload, currentRate, previousRate);
-    }
-
-    protected double getRate(String sourceCurrency, String targetCurrency) {
-        return getRate(sourceCurrency, targetCurrency, 0);
-    }
-
-    protected double getRate(String sourceCurrency, String targetCurrency, int num) {
-        JsonObject rates = database.getCurrencyData(sourceCurrency, num);
-        double rate = rates.getAsJsonObject(targetCurrency).get("rate").getAsDouble();
-        return rate;
     }
 }

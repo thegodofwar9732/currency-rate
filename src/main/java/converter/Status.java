@@ -1,6 +1,5 @@
 package converter;
 
-
 import javafx.scene.image.Image;
 
 public enum Status {
