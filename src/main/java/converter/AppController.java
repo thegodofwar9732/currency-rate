@@ -41,9 +41,18 @@ public class AppController {
 
     private ApiClient apiClient;
 
+    private String input;
+    private double rate;
+    private String sourceCurrency;
+    private String targetCurrency;
+    private String yesterday;
+
     //Default Constructor
     public AppController() {
         apiClient = new ApiClient();
+        yesterday = LocalDate.now().minusDays(1).format(DateTimeFormatter.ISO_LOCAL_DATE);
+        input = "1";
+        rate = 1;
     }
 
     @FXML
@@ -53,12 +62,36 @@ public class AppController {
         targetComboBox.getItems().setAll(Currency.values());
 
         statusImageView.setVisible(false);
+        inputText.setText(input);
+
+        sourceComboBox.valueProperty().addListener((option, oldValue, newValue) -> {
+            sourceCurrency = newValue.getCode();
+            if (targetCurrency != null) {
+                try {
+                    showStatus();
+                    convert();
+                } catch (ParserConfigurationException | SAXException | XPathExpressionException | IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        targetComboBox.valueProperty().addListener((option, oldvalue, newvalue) -> {
+            targetCurrency = newvalue.getCode();
+            if (sourceCurrency != null) {
+                try {
+                    showStatus();
+                    convert();
+                } catch (ParserConfigurationException | SAXException | XPathExpressionException | IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @FXML
-
-    private void instantUpdate(KeyEvent event) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
-        //Update the outputText when a number is entered or when inputText is modified
+    private void instantUpdate(KeyEvent event) {
+        //Update the ouputText when a number is entered or when inputText is modified
         if (event.getCode() == KeyCode.DIGIT0 || event.getCode() == KeyCode.DIGIT1 || event.getCode() == KeyCode.DIGIT2 || event.getCode() == KeyCode.DIGIT3 || event.getCode() == KeyCode.DIGIT4 || event.getCode() == KeyCode.DIGIT5 || event.getCode() == KeyCode.DIGIT6 || event.getCode() == KeyCode.DIGIT7 || event.getCode() == KeyCode.DIGIT8 || event.getCode() == KeyCode.DIGIT9) {
             convert();
         } else if (event.getCode() == KeyCode.BACK_SPACE && !inputText.getText().isEmpty()) {
@@ -79,37 +112,33 @@ public class AppController {
         latestUpdateDate.setText(date);
     }
 
-    private void showStatus(String previousUpload, double rate, double previousRate) {
+    private void showStatus() throws ParserConfigurationException, SAXException, XPathExpressionException, IOException {
+        double previousRate = apiClient.getYesterdayRate(sourceCurrency, targetCurrency);
+        rate = apiClient.getCurrentRate(sourceCurrency, targetCurrency);
+
         statusImageView.setVisible(true);
         Tooltip tooltip = new Tooltip();
         double difference = rate - previousRate;
 
         if (difference > 0) {
-            tooltip.setText(String.format("Rate up by %f since last update %s", difference, previousUpload));
+            tooltip.setText(String.format("Rate up by %f since last update %s", difference, yesterday));
             statusImageView.setImage(Status.UP.getImage());
         }
         if (difference < 0) {
-            tooltip.setText(String.format("Rate down by %f since last update %s", difference, previousUpload));
+            tooltip.setText(String.format("Rate down by %f since last update %s", difference, yesterday));
             statusImageView.setImage(Status.DOWN.getImage());
         }
         if (difference == 0) {
-            tooltip.setText(String.format("Rate unchanged since last update %s", previousUpload));
+            tooltip.setText(String.format("Rate unchanged since last update %s", yesterday));
             statusImageView.setImage(Status.UNCHANGED.getImage());
         }
 
         Tooltip.install(statusImageView, tooltip);
     }
 
-    private void convert() throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
-        String source = sourceComboBox.getValue().getCode();
-        String target = targetComboBox.getValue().getCode();
-        double currentRate = apiClient.getCurrentRate(source, target);
-        double result = currentRate * Double.parseDouble(inputText.getText());
+    private void convert() {
+        double result = rate * Double.parseDouble(inputText.getText());
 
         outputText.setText(Double.toString(result));
-
-        double previousRate = apiClient.getYesterdayRate(source, target);
-        String yesterday = LocalDate.now().minusDays(1).format(DateTimeFormatter.ISO_LOCAL_DATE);
-        showStatus(yesterday, currentRate, previousRate);
     }
 }

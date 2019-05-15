@@ -18,7 +18,7 @@
             </font>
         </Label>
 
-        <TextField fx:id="inputText" layoutX="41.0" layoutY="93.0" onKeyReleased="#instantUpdate" text="0"/>
+        <TextField fx:id="inputText" layoutX="41.0" layoutY="93.0" onKeyReleased="#instantUpdate"/>
         <TextField fx:id="outputText" layoutX="332.0" layoutY="93.0"/>
         <Rectangle arcHeight="5.0" arcWidth="5.0" height="7.0" layoutX="246.0" layoutY="128.0" stroke="BLACK"
                    strokeType="INSIDE" width="45.0"/>
