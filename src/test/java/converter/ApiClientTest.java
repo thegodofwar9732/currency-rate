@@ -1,59 +1,93 @@
 package converter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.net.URL;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.xml.sax.SAXException;
 
-class ApiClientTest {
+public class ApiClientTest {
 
-    private ApiClient apiClient;
-    private double actual;
-    private double expected;
+	double expected;
+	double actual;
+	ApiClient api;
+	Parser parser;
+	final String BASE_URL = "http://www.floatrates.com/";
+	
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+	}
 
-    @Before
-    public void setUp() {
-        apiClient = new ApiClient();
-    }
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+	}
 
-    @Test
-    public void testgetCurrentRateEurosToDollars() throws IOException, ParserConfigurationException, SAXException, XPathExpressionException {
-        actual = apiClient.getCurrentRate("eur", "usd");
-        expected = 1.13;
-        assertEquals("Failed to convert dollars to euros", expected, actual, .05);
-    }
+	@Before
+	public void setUp() throws Exception {
+		api = new ApiClient();
+		parser = new Parser();
+	}
 
-    @Test(expected = RuntimeException.class)
-    public void testgetCurrentRateDollarsToDollars() throws IOException, ParserConfigurationException, SAXException, XPathExpressionException {
-        apiClient.getCurrentRate("usd", "usd");
-    }
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    @Test
-    public void testgetCurrentRateCanadianToAustralain() throws IOException, ParserConfigurationException, SAXException, XPathExpressionException {
-        actual = 2 * (apiClient.getCurrentRate("cad", "aud"));
-        expected = 2.09;
-        assertEquals("Failed to convert dollars to euros", expected, actual, .05);
-    }
+	@Test
+	public void testgetCurrentRateEurosToDollars() throws Exception, ParserConfigurationException, SAXException, IOException {
+		actual = api.getCurrentRate("eur", "usd");
+		
+		URL url = new URL(String.format("%sdaily/%s.xml", BASE_URL, "eur"));
+        expected = parser.getRate(url, "usd");
+		
+		assertEquals("failure to convert euros to Dollars", expected, actual, .01);
+	}
+	
+	@Test
+	public void testgetCurrentRateCanadianToAustralain() throws Exception, ParserConfigurationException, SAXException, IOException {
+		actual = 2 *( api.getCurrentRate("cad", "aud"));
+		
+		URL url = new URL(String.format("%sdaily/%s.xml", BASE_URL, "cad"));
+		expected = 2* (parser.getRate(url, "aud"));
+		
+		assertEquals("failure to convert Canadian to Australian", expected, actual, .01);
+	}
+	
+	@Test (expected = Exception.class)
+    public void testgetCurrentRateDollarsToDollars() throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
+		actual = api.getCurrentRate("usd", "usd");
+		
+		URL url = new URL(String.format("%sdaily/%s.xml", BASE_URL, "usd"));
+        expected = parser.getRate(url, "usd");
+		
+		assertEquals("failure to convert euros to Dollars", expected, actual, .01);
+	}
 
-    @Test(expected = java.lang.RuntimeException.class)
-    public void testgetCurrentRateDollarsToNothing() throws IOException, ParserConfigurationException, SAXException, XPathExpressionException {
-        apiClient.getCurrentRate("usd", "");
-    }
-
-    @Test(expected = java.lang.Exception.class)
-    public void testgetCurrentRateNothingToDollars() throws IOException, ParserConfigurationException, SAXException, XPathExpressionException {
-        apiClient.getCurrentRate("", "usd");
-    }
-
+	@Test (expected = Exception.class)
+    public void testgetCurrentRateDollarsToNothing() throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
+		actual = api.getCurrentRate("usd", "");
+		
+		URL url = new URL(String.format("%sdaily/%s.xml", BASE_URL, "usd"));
+        expected = parser.getRate(url, "");
+		
+		assertEquals("failure to convert euros to Dollars", expected, actual, .01);
+	}
+	
+	@Test (expected = Exception.class)
+    public void testgetCurrentRateNothingToDollars() throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
+		actual = api.getCurrentRate("", "usd");
+		
+		URL url = new URL(String.format("%sdaily/%s.xml", BASE_URL, ""));
+        expected = parser.getRate(url, "usd");
+		
+		assertEquals("failure to convert euros to Dollars", expected, actual, .01);
+	}
 }
