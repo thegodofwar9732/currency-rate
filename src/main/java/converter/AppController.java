@@ -1,8 +1,5 @@
 package converter;
 
-import com.google.gson.JsonObject;
-import converter.database.Database;
-
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
@@ -97,33 +94,33 @@ public class AppController {
     }
 
     @FXML
-    private void inputEditEnabler(Event event){
-       	if(isInvalidInput()) {
-    		return;
-    	}
-    	inputText.setEditable(true);
-    	convert();
+    private void inputEditEnabler(Event event) {
+        if (isInvalidInput()) {
+            return;
+        }
+        inputText.setEditable(true);
+        convert();
     }
 
     //outputEditConverter
     @FXML
-    private void outputEditConverter(Event event){
-    	if(isInvalidInput()) {
-    		return;
-    	}
-    	convert();
+    private void outputEditConverter(Event event) {
+        if (isInvalidInput()) {
+            return;
+        }
+        convert();
     }
 
     @FXML
     private void instantUpdate(KeyEvent event) {
         //Update the ouputText when a number is entered or when inputText is modified
-    	if(isInvalidInput()) {
-    		return;
-    	}
-    	if (event.getCode() == KeyCode.DIGIT0 || event.getCode() == KeyCode.DIGIT1 || event.getCode() == KeyCode.DIGIT2 || event.getCode() == KeyCode.DIGIT3 || event.getCode() == KeyCode.DIGIT4 || event.getCode() == KeyCode.DIGIT5 || event.getCode() == KeyCode.DIGIT6 || event.getCode() == KeyCode.DIGIT7 || event.getCode() == KeyCode.DIGIT8 || event.getCode() == KeyCode.DIGIT9) {
+        if (isInvalidInput()) {
+            return;
+        }
+        if (event.getCode() == KeyCode.DIGIT0 || event.getCode() == KeyCode.DIGIT1 || event.getCode() == KeyCode.DIGIT2 || event.getCode() == KeyCode.DIGIT3 || event.getCode() == KeyCode.DIGIT4 || event.getCode() == KeyCode.DIGIT5 || event.getCode() == KeyCode.DIGIT6 || event.getCode() == KeyCode.DIGIT7 || event.getCode() == KeyCode.DIGIT8 || event.getCode() == KeyCode.DIGIT9) {
             convert();
 
-        }else if(event.getCode() == KeyCode.BACK_SPACE && !inputText.getText().isEmpty()) {
+        } else if (event.getCode() == KeyCode.BACK_SPACE && !inputText.getText().isEmpty()) {
 
             if (!(Double.parseDouble(inputText.getText()) <= 0) && inputText.getText() != null && inputText.getText().length() != 0) {
                 convert();
@@ -131,30 +128,29 @@ public class AppController {
                 outputText.setText("0");
             }
 
-        }
-        else if (event.getCode() == KeyCode.UNDEFINED) {
+        } else if (event.getCode() == KeyCode.UNDEFINED) {
             return;
         }
     }
 
     private boolean isInvalidInput() {
 
-    	if(inputText.getText().isEmpty()) {
-    		outputText.setText("");
-    		return true;
-    	}
-    	boolean numeric = true;
-    	try {
-    		Double num =  Double.parseDouble(inputText.getText());
+        if (inputText.getText().isEmpty()) {
+            outputText.setText("");
+            return true;
+        }
+        boolean numeric = true;
+        try {
+            Double num = Double.parseDouble(inputText.getText());
         } catch (NumberFormatException e) {
             numeric = false;
         }
-    	if(!numeric) {
-    		outputText.setText("Characters are Not Allowed.");
-    		return true;
-    	}
+        if (!numeric) {
+            outputText.setText("Characters are Not Allowed.");
+            return true;
+        }
 
-    	return false;
+        return false;
 
     }
 
@@ -188,18 +184,15 @@ public class AppController {
 
     private void convert() {
 
-    	if(isInvalidInput()) {
-    		return;
-    	}
-        String source = sourceComboBox.getValue().getCode();
-        String target = targetComboBox.getValue().getCode();
-        //if user pick the same source and target
-        if(source.equals(target)) {
-        	outputText.setText(inputText.getText());
-        	return;
+        if (isInvalidInput()) {
+            return;
         }
-        double currentRate = getRate(source, target);
-        double result = currentRate * Double.parseDouble(inputText.getText());
+
+        //if user pick the same source and target
+        if (sourceCurrency.equals(targetCurrency)) {
+            outputText.setText(inputText.getText());
+            return;
+        }
         double result = rate * Double.parseDouble(inputText.getText());
 
         outputText.setText(Double.toString(result));
