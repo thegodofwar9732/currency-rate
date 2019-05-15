@@ -147,7 +147,7 @@ public class AppController {
             numeric = false;
         }
         if (!numeric) {
-            outputText.setText("Characters are Not Allowed.");
+            outputText.setText("Invalid Input.");
             return true;
         }
 

@@ -1,35 +1,35 @@
 package converter;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-class CurrencyTest {
+public class CurrencyTest {
 
 	String expected;
 	String actual;
 	
-	@BeforeAll
-	static void setUpBeforeClass() throws Exception {
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
 	}
 
-	@AfterAll
-	static void tearDownAfterClass() throws Exception {
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
 	}
 
-	@BeforeEach
-	void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 	}
 
-	@AfterEach
-	void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 	}
 
-    @Test 
+	@Test 
     public void GetCodeEuro(){
     	expected = "eur";
     	actual = Currency.EUR.getCode();
@@ -84,5 +84,5 @@ class CurrencyTest {
     	actual = Currency.USD.toString();
     	assertNotEquals(expected, actual);
     }
-    
+
 }
