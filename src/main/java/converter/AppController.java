@@ -1,5 +1,6 @@
 package converter;
 
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -60,7 +61,9 @@ public class AppController {
         //Initialize the ChoiceBoxes with the currencies.
         sourceComboBox.getItems().setAll(Currency.values());
         targetComboBox.getItems().setAll(Currency.values());
-
+        //Input text make disable when initialize
+        inputText.setEditable(false);
+        outputText.setEditable(false);
         statusImageView.setVisible(false);
         inputText.setText(input);
 
@@ -87,13 +90,36 @@ public class AppController {
                 }
             }
         });
+
+    }
+
+    @FXML
+    private void inputEditEnabler(Event event) {
+        if (isInvalidInput()) {
+            return;
+        }
+        inputText.setEditable(true);
+        convert();
+    }
+
+    //outputEditConverter
+    @FXML
+    private void outputEditConverter(Event event) {
+        if (isInvalidInput()) {
+            return;
+        }
+        convert();
     }
 
     @FXML
     private void instantUpdate(KeyEvent event) {
         //Update the ouputText when a number is entered or when inputText is modified
+        if (isInvalidInput()) {
+            return;
+        }
         if (event.getCode() == KeyCode.DIGIT0 || event.getCode() == KeyCode.DIGIT1 || event.getCode() == KeyCode.DIGIT2 || event.getCode() == KeyCode.DIGIT3 || event.getCode() == KeyCode.DIGIT4 || event.getCode() == KeyCode.DIGIT5 || event.getCode() == KeyCode.DIGIT6 || event.getCode() == KeyCode.DIGIT7 || event.getCode() == KeyCode.DIGIT8 || event.getCode() == KeyCode.DIGIT9) {
             convert();
+
         } else if (event.getCode() == KeyCode.BACK_SPACE && !inputText.getText().isEmpty()) {
 
             if (!(Double.parseDouble(inputText.getText()) <= 0) && inputText.getText() != null && inputText.getText().length() != 0) {
@@ -101,11 +127,31 @@ public class AppController {
             } else if (event.getCode() == KeyCode.BACK_SPACE && inputText.getText().length() == 0) {
                 outputText.setText("0");
             }
+
         } else if (event.getCode() == KeyCode.UNDEFINED) {
-            outputText.setText("0");
-        } else {
-            outputText.setText("0");
+            return;
         }
+    }
+
+    private boolean isInvalidInput() {
+
+        if (inputText.getText().isEmpty()) {
+            outputText.setText("");
+            return true;
+        }
+        boolean numeric = true;
+        try {
+            Double num = Double.parseDouble(inputText.getText());
+        } catch (NumberFormatException e) {
+            numeric = false;
+        }
+        if (!numeric) {
+            outputText.setText("Characters are Not Allowed.");
+            return true;
+        }
+
+        return false;
+
     }
 
     public void setDate(String date) {
@@ -137,6 +183,16 @@ public class AppController {
     }
 
     private void convert() {
+
+        if (isInvalidInput()) {
+            return;
+        }
+
+        //if user pick the same source and target
+        if (sourceCurrency.equals(targetCurrency)) {
+            outputText.setText(inputText.getText());
+            return;
+        }
         double result = rate * Double.parseDouble(inputText.getText());
 
         outputText.setText(Double.toString(result));
