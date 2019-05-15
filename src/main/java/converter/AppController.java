@@ -56,8 +56,15 @@ public class AppController {
     }
     
     @FXML
-    private void edit(Event event){
+    private void inputEditEnabler(Event event){
     	inputText.setEditable(true);
+    	convert();
+    }
+    
+    //outputEditConverter
+    @FXML
+    private void outputEditConverter(Event event){
+    	convert();
     }
     
     @FXML
@@ -81,7 +88,7 @@ public class AppController {
             outputText.setText("0");
             
         } else {
-        	inputFilter();
+   
         	clearInputText();
         }
     }
@@ -137,8 +144,8 @@ public class AppController {
         double result = currentRate * Double.parseDouble(inputText.getText());
         outputText.setText(Double.toString(result));
         double previousRate = getRate(source, target, 1);
-        String previousUpload = database.getUploadDate(1);
-        showStatus(previousUpload, currentRate, previousRate);
+        //String previousUpload = database.getUploadDate(1);
+        //showStatus(previousUpload, currentRate, previousRate);
     }
 
     protected double getRate(String sourceCurrency, String targetCurrency) {
