@@ -93,6 +93,16 @@ public class ApiClientTest {
 		assertEquals("failure to convert euros to Dollars", expected, actual, .01);
 	}
 	
+	@Test(expected = Exception.class)
+	public void testGetCurrentRateMaxValue() throws XPathExpressionException, ParserConfigurationException, SAXException, Exception {
+		actual = Integer.MAX_VALUE*(api.getCurrentRate("eur", "usd"));
+		
+		URL url = new URL(String.format("%sdaily/%s.xml", BASE_URL, ""));
+        expected = Integer.MAX_VALUE*(parser.getRate(url, "usd"));
+		
+		assertEquals("failure to convert euros to Dollars", expected, actual, .01);
+	}
+	
 	@Test
 	public void testgetYesterdayRateEurosToDollars() throws Exception, ParserConfigurationException, SAXException, IOException {
 		actual = api.getYesterdayRate("eur", "usd");

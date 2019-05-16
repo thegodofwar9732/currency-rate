@@ -118,6 +118,7 @@ public class AppController {
         if (isInvalidInput()) {
             return;
         }
+
         if (event.getCode() == KeyCode.DIGIT0 || event.getCode() == KeyCode.DIGIT1 || event.getCode() == KeyCode.DIGIT2 || event.getCode() == KeyCode.DIGIT3 || event.getCode() == KeyCode.DIGIT4 || event.getCode() == KeyCode.DIGIT5 || event.getCode() == KeyCode.DIGIT6 || event.getCode() == KeyCode.DIGIT7 || event.getCode() == KeyCode.DIGIT8 || event.getCode() == KeyCode.DIGIT9) {
             convert();
 
@@ -147,7 +148,7 @@ public class AppController {
             numeric = false;
         }
         if (!numeric) {
-            outputText.setText("Characters are Not Allowed.");
+            outputText.setText("Invalid Input.");
             return true;
         }
 
