@@ -56,6 +56,9 @@ public class AppController {
         rate = 1;
     }
 
+    /**
+     * Initializes the GUI
+     */
     @FXML
     private void initialize() {
         //Initialize the ChoiceBoxes with the currencies.
@@ -94,6 +97,10 @@ public class AppController {
 
     }
 
+    /**
+     * Ensures the input is valid by calling isInvalidInput()
+     * Then calls convert()
+     */
     @FXML
     private void inputEditEnabler(Event event) {
         if (isInvalidInput()) {
@@ -103,7 +110,10 @@ public class AppController {
         convert();
     }
 
-    //outputEditConverter
+    /**
+     * Ensures the input is valid by calling isInvalidInput()
+     * Then calls convert()
+     */
     @FXML
     private void outputEditConverter(Event event) {
         if (isInvalidInput()) {
@@ -135,6 +145,10 @@ public class AppController {
         }
     }
 
+    /**
+     * Checks if the input is valid
+     * @return true if the input is invalid and false if not
+     */
     private boolean isInvalidInput() {
 
         if (inputText.getText().isEmpty()) {
@@ -156,6 +170,9 @@ public class AppController {
 
     }
 
+    /**
+     * sets the date for latest update
+     */
     public void setDate(String date) {
         latestUpdateDate.setText(date);
     }
@@ -192,6 +209,9 @@ public class AppController {
         Tooltip.install(statusImageView, tooltip);
     }
 
+    /**
+     * performs the conversion between the two currencies
+     */
     private void convert() {
 
         if (isInvalidInput()) {
