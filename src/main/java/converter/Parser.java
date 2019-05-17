@@ -12,7 +12,18 @@ import java.net.URL;
 
 public class Parser {
 
-    public double getRate(URL url, String target) throws ParserConfigurationException, IOException, SAXException, XPathExpressionException {
+    /**
+     * parse xml response
+     *
+     * @param url    the api endpoint
+     * @param target the target name of currency
+     * @return the exchange rate
+     * @throws ParserConfigurationException if unable to create Document
+     * @throws IOException                  if url is invalid
+     * @throws SAXException                 if response is not xml format
+     * @throws XPathExpressionException     if expression is invalid
+     */
+    public double getRate(URL url, String target) throws ParserConfigurationException, IOException, XPathExpressionException, SAXException {
         Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(url.openStream());
         document.getDocumentElement().normalize();
 
