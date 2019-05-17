@@ -1,32 +1,57 @@
 package converter;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import java.io.File;
 
-class StatusTest {
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-	@BeforeAll
-	static void setUpBeforeClass() throws Exception {
+
+public class StatusTest {
+
+	File file;
+	
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
 	}
 
-	@AfterAll
-	static void tearDownAfterClass() throws Exception {
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
 	}
 
-	@BeforeEach
-	void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 	}
 
-	@AfterEach
-	void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 	}
 
-    @Test
-    public void getImage() {
-    }
+	@Test
+	public void TestNotNullUp() {
+		file = new File("src/main/resources/img/up.png"); 
+		assertTrue(file.exists());
+	}
+	
+	@Test
+	public void TestNotNullDown() {
+		file = new File("src/main/resources/img/down.png"); 
+		assertTrue(file.exists());
+	}
+	
+	@Test
+	public void TestNotNullUnchanged() {
+		file = new File("src/main/resources/img/same.png"); 
+		assertTrue(file.exists());
+	}
+	
+	@Test
+	public void TesNull() {
+		file = new File("src/main/resources/img/xxxx.png"); 
+		assertFalse(file.exists());
+	}
 }
